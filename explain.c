@@ -257,8 +257,17 @@ static inline const char * explain_optype(zend_uint type, zval **return_value_pt
     /* special case for jmp's */
     case EXPLAIN_OPLINE: ZVAL_STRINGL(*return_value_ptr, "IS_OPLINE", sizeof("IS_OPLINE"), 1); break;
     
-    default:
-      ZVAL_STRINGL(*return_value_ptr, "unknown", sizeof("unknown"), 1); break;
+    default: if (type & EXT_TYPE_UNUSED) {
+      switch (type &~ EXT_TYPE_UNUSED) {
+        case IS_CV: ZVAL_STRINGL(*return_value_ptr, "IS_CV|EXT_TYPE_UNUSED", sizeof("IS_CV|EXT_TYPE_UNUSED"), 1); break;
+        case IS_TMP_VAR: ZVAL_STRINGL(*return_value_ptr, "IS_TMP_VAR|EXT_TYPE_UNUSED", sizeof("IS_TMP_VAR|EXT_TYPE_UNUSED"), 1); break;
+        case IS_VAR: ZVAL_STRINGL(*return_value_ptr, "IS_VAR|EXT_TYPE_UNUSED", sizeof("IS_VAR|EXT_TYPE_UNUSED"), 1); break;
+        case IS_CONST: ZVAL_STRINGL(*return_value_ptr, "IS_CONST|EXT_TYPE_UNUSED", sizeof("IS_CONST|EXT_TYPE_UNUSED"), 1); break;
+        case IS_UNUSED: ZVAL_STRINGL(*return_value_ptr, "IS_UNUSED|EXT_TYPE_UNUSED", sizeof("IS_UNUSED|EXT_TYPE_UNUSED"), 1); break;
+      }
+    } else {
+      ZVAL_STRINGL(*return_value_ptr, "unknown", sizeof("unknown"), 1); break; 
+    }
   }
 }
 
