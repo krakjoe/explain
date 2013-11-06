@@ -233,16 +233,16 @@ static explain_opcode_t opcodes[]= {
 	{NULL, 0, 0}
 };
 
-static inline void explain_opcode(long opcode, zval **return_value_ptr TSRMLS_DC) {
+static inline void explain_opcode(long opcode, zval **return_value_ptr TSRMLS_DC) { /* {{{ */
   explain_opcode_t decode = opcodes[opcode];
   
   if (decode.opcode == opcode) {
     ZVAL_STRINGL(
       *return_value_ptr, decode.name, decode.name_len, 1);
   } else ZVAL_STRINGL(*return_value_ptr, "unknown", sizeof("unknown"), 1);
-}
+} /* }}} */
 
-static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint type, const char *name, size_t name_len, zval **return_value_ptr TSRMLS_DC) {
+static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint type, const char *name, size_t name_len, zval **return_value_ptr TSRMLS_DC) { /* {{{ */
   if (!op || type == IS_UNUSED)
     return;
 
@@ -267,9 +267,9 @@ static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint t
         *return_value_ptr, name, name_len, copy);
     } break;
   }
-}
+} /* }}} */
 
-static inline const char * explain_optype(zend_uint type, zval **return_value_ptr TSRMLS_DC) {
+static inline const char * explain_optype(zend_uint type, zval **return_value_ptr TSRMLS_DC) { /* {{{ */
   switch (type) {
     case IS_CV: ZVAL_STRINGL(*return_value_ptr, "IS_CV", sizeof("IS_CV"), 1); break;
     case IS_TMP_VAR: ZVAL_STRINGL(*return_value_ptr, "IS_TMP_VAR", sizeof("IS_TMP_VAR"), 1); break;
@@ -291,7 +291,7 @@ static inline const char * explain_optype(zend_uint type, zval **return_value_pt
       ZVAL_STRINGL(*return_value_ptr, "unknown", sizeof("unknown"), 1); break; 
     }
   }
-}
+} /* }}} */
 
 /* {{{ proto array explain(string code [, long options])
    explain some code */
@@ -337,7 +337,7 @@ PHP_FUNCTION(explain)
       {
         zval *zopline = NULL;
 
-        MAKE_STD_ZVAL(zopline);
+        ALLOC_ZVAL(zopline);
 
         array_init(zopline);
         {
