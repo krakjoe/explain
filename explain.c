@@ -327,10 +327,10 @@ PHP_FUNCTION(explain)
 
       destroy_op_array(ops TSRMLS_CC);
       efree(ops);
-		} else {
+    } else {
       RETURN_FALSE;
 		}
-	}
+  }
 }
 /* }}} */
 
