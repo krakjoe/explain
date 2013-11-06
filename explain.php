@@ -10,8 +10,8 @@ td, th {
         <th>OPLINE</th>
         <th>OPCODE</th>
         <th>OP1(TYPE)</th>
-        <th>OP2(TYPE)</th>
         <th>OP1</th>
+        <th>OP2(TYPE)</th>
         <th>OP2</th>
         <th>RESULT(TYPE)</th>
         <th>RESULT</th>
@@ -38,26 +38,31 @@ HERE
     <?php else: ?>
     <td>-</td>
     <?php endif; ?>
-    <?php if(isset($opline["op2_type"]) && $opline["op2_type"] != 8) : ?>
-    <td><?=explain_optype($opline["op2_type"]) ?> (<?=$opline["op2_type"] ?>)</td>
-    <?php else: ?>
-    <td>-</td>
-    <?php endif; ?>
+    
     <?php if(isset($opline["op1_type"]) && $opline["op1_type"] != 8) : ?>
     <td><?=@$opline["op1"] ?></td>
     <?php else: ?>
     <td>-</td>
     <?php endif; ?>
+    
+    <?php if(isset($opline["op2_type"]) && $opline["op2_type"] != 8) : ?>
+    <td><?=explain_optype($opline["op2_type"]) ?> (<?=$opline["op2_type"] ?>)</td>
+    <?php else: ?>
+    <td>-</td>
+    <?php endif; ?>
+    
     <?php if(isset($opline["op2_type"]) && $opline["op2_type"] != 8) : ?>
     <td><?=@$opline["op2"] ?></td>
     <?php else: ?>
     <td>-</td>
     <?php endif; ?>
+    
     <?php if(isset($opline["result_type"]) && $opline["result_type"] != 8) : ?>
     <td><?=explain_optype($opline["result_type"]) ?> (<?=@$opline["result_type"] ?>)</td>
     <?php else: ?>
     <td>-</td>
     <?php endif; ?>
+    
     <?php if(isset($opline["result_type"]) && $opline["result_type"] != 8) : ?>
     <td><?=@$opline["result"] ?></td>
     <?php else: ?>
