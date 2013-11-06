@@ -20,15 +20,26 @@ td, th {
 <tbody>
 <?php
 $code = <<<HERE
-echo "Hello World";
-foreach (\$vars as \$var) {
-    echo \$var;
-    echo "\n";
-}
-new stdClass();
+error_reporting(E_ALL);
+
+include ("vendor/autoload.php");
+
+\$app = new Silex\Application();
+
+\$app->register(new Silex\Provider\TwigServiceProvider(), array(
+    "twig.path" => sprintf("%s/twigs", __DIR__)
+));
+
+\$app->get("/", function() use (&\$app) {
+    return \$app["twig"]->render("index.twig", array(
+        "date" => date("c")
+    ));
+});
+
+\$app->run();
 HERE
 ?>
-<?php foreach ($explained=explain("/opt/php-zts/htdocs/index.php", EXPLAIN_FILE) as $opline): ?>
+<?php foreach ($explained=explain($code, EXPLAIN_STRING) as $opline): ?>
 <tr>
     <td><?=$opline["lineno"] ?></td>
     <td><?=$opline["opline"] ?></td>
