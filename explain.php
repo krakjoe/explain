@@ -15,7 +15,16 @@ td, th {
     </tr>
 </thead>
 <tbody>
-<?php foreach (explain("/usr/src/php-upstream/test.php") as $opline): ?>
+<?php
+$code = <<<HERE
+echo "Hello World";
+foreach (\$vars as \$var) {
+    echo \$var;
+    echo "\n";
+}
+HERE
+?>
+<?php foreach (explain($code, EXPLAIN_STRING) as $opline): ?>
 <tr>
     <td><?=$opline["lineno"] ?></td>
     <td><?=explain_opcode($opline["opcode"]) ?> (<?=$opline["opcode"] ?>)</td>

@@ -33,6 +33,10 @@ typedef struct _explain_opcode_t {
     zend_uchar opcode;
 } explain_opcode_t;
 
+#define EXPLAIN_FILE   0x00000001
+#define EXPLAIN_STRING 0x00000010
+#define EXPLAIN_QUIET  0x00000100
+
 #define EXPLAIN_OPCODE_NAME(c) \
     {#c, sizeof(#c), c}
 
@@ -224,12 +228,9 @@ static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint t
             add_assoc_stringl_ex(*return_value_ptr, name, name_len, (char*) ops->vars[op->var].name, ops->vars[op->var].name_len, 1);
         } break;
         
+        case IS_VAR:
         case IS_TMP_VAR: {
             add_assoc_long_ex(*return_value_ptr, name, name_len, ops->vars - op->var);
-        } break;
-        
-        case IS_VAR: {
-            add_assoc_long_ex(*return_value_ptr, name, name_len, (zend_ulong*) op);
         } break;
         
         case IS_CONST: {
@@ -259,11 +260,10 @@ static inline const char * explain_optype(zend_uint type, zval **return_value_pt
    Explain a file */
 PHP_FUNCTION(explain)
 {
-	char *filename;
-	zend_uint filename_length;
-    zend_ulong options = 0;
+	zval *code;
+    zend_ulong options = EXPLAIN_FILE;
     
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|l", &filename, &filename_length, &options) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z|l", &code, &options) == FAILURE) {
 		return;
 	}
 
@@ -271,54 +271,63 @@ PHP_FUNCTION(explain)
 	    zend_file_handle fh;
 	    zend_op_array *ops = NULL;
 	    
-        if (php_stream_open_for_zend_ex(filename, &fh, USE_PATH|STREAM_OPEN_FOR_INCLUDE TSRMLS_CC) == SUCCESS) {
-            int dummy = 1;
-            
-            if (zend_hash_add(&EG(included_files), fh.opened_path, strlen(fh.opened_path)+1, (void**) &dummy, sizeof(int), NULL) == SUCCESS) {
-                ops = zend_compile_file(
-                    &fh, ZEND_INCLUDE TSRMLS_CC);
-                zend_destroy_file_handle(&fh TSRMLS_CC);
+        if (options & EXPLAIN_FILE) {
+            if (php_stream_open_for_zend_ex(Z_STRVAL_P(code), &fh, USE_PATH|STREAM_OPEN_FOR_INCLUDE TSRMLS_CC) == SUCCESS) {
+                int dummy = 1;
+                
+                if (zend_hash_add(&EG(included_files), fh.opened_path, strlen(fh.opened_path)+1, (void**) &dummy, sizeof(int), NULL) == SUCCESS) {
+                    ops = zend_compile_file(
+                        &fh, ZEND_INCLUDE TSRMLS_CC);
+                    zend_destroy_file_handle(&fh TSRMLS_CC);
+                } else {
+                    zend_file_handle_dtor(&fh TSRMLS_CC);
+                }
             } else {
-                zend_file_handle_dtor(&fh TSRMLS_CC);
+                RETURN_FALSE;
             }
+        } else if (options & EXPLAIN_STRING) {
+            ops = zend_compile_string(code, "explained" TSRMLS_CC);
+        } else {
+            zval_ptr_dtor(&code);
+            zend_error(E_WARNING, "invalid options passed to explain (%d), please see documentation", options);
+        }
+        
+        if (ops) {
+            zend_uint next = 0;
 
-            if (ops) {
-                zend_uint next = 0;
+            array_init(return_value);
 
-                array_init(return_value);
+            do {
+                zval *zopline;
+                
+                MAKE_STD_ZVAL(zopline);
+                
+                array_init(zopline);
+                {
+                    zend_op *opline = &ops->opcodes[next];
 
-                do {
-                    zval *zopline;
+                    add_assoc_long_ex(
+                        zopline, "opcode", sizeof("opcode"), opline->opcode);
+                    add_assoc_long_ex(
+                        zopline, "op1_type", sizeof("op1_type"), opline->op1_type);
+                    add_assoc_long_ex(
+                        zopline, "op2_type", sizeof("op2_type"), opline->op2_type);
+                    add_assoc_long_ex(
+                        zopline, "extended_value", sizeof("extended_value"), opline->extended_value);
+                    add_assoc_long_ex(
+                        zopline, "result_type", sizeof("result_type"), opline->result_type);
+                    add_assoc_long_ex(
+                        zopline, "lineno", sizeof("lineno"), opline->lineno);
                     
-                    MAKE_STD_ZVAL(zopline);
-                    
-                    array_init(zopline);
-                    {
-                        zend_op *opline = &ops->opcodes[next];
+                    explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &zopline TSRMLS_CC);
+                    explain_zend_op(ops, &opline->op2, opline->op2_type, "op2", sizeof("op2"), &zopline TSRMLS_CC);
+                }
+                
+                add_next_index_zval(return_value, zopline);
+            } while (++next < ops->last);
 
-                        add_assoc_long_ex(
-                            zopline, "opcode", sizeof("opcode"), opline->opcode);
-                        add_assoc_long_ex(
-                            zopline, "op1_type", sizeof("op1_type"), opline->op1_type);
-                        add_assoc_long_ex(
-                            zopline, "op2_type", sizeof("op2_type"), opline->op2_type);
-                        add_assoc_long_ex(
-                            zopline, "extended_value", sizeof("extended_value"), opline->extended_value);
-                        add_assoc_long_ex(
-                            zopline, "result_type", sizeof("result_type"), opline->result_type);
-                        add_assoc_long_ex(
-                            zopline, "lineno", sizeof("lineno"), opline->lineno);
-                        
-                        explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &zopline TSRMLS_CC);
-                        explain_zend_op(ops, &opline->op2, opline->op2_type, "op2", sizeof("op2"), &zopline TSRMLS_CC);
-                    }
-                    
-                    add_next_index_zval(return_value, zopline);
-                } while (++next < ops->last);
-
-                destroy_op_array(ops TSRMLS_CC);
-                efree(ops);
-            }
+            destroy_op_array(ops TSRMLS_CC);
+            efree(ops);
         } else {
             RETURN_FALSE;
         }
@@ -384,13 +393,20 @@ const zend_function_entry explain_functions[] = {
 };
 /* }}} */
 
+/* {{{ MINIT */
+static PHP_MINIT_FUNCTION(explain) {
+    REGISTER_LONG_CONSTANT("EXPLAIN_STRING", EXPLAIN_STRING, CONST_CS | CONST_PERSISTENT TSRMLS_CC);
+    REGISTER_LONG_CONSTANT("EXPLAIN_FILE", EXPLAIN_FILE, CONST_CS | CONST_PERSISTENT TSRMLS_CC);
+    REGISTER_LONG_CONSTANT("EXPLAIN_QUIET", EXPLAIN_QUIET, CONST_CS | CONST_PERSISTENT TSRMLS_CC);
+} /* }}} */
+
 /* {{{ explain_module_entry
  */
 zend_module_entry explain_module_entry = {
 	STANDARD_MODULE_HEADER,
 	PHP_EXPLAIN_EXTNAME,
 	explain_functions,
-	NULL,
+	PHP_MINIT(explain),
 	NULL,
 	NULL,
 	NULL,
