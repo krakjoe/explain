@@ -25,4 +25,6 @@ function explain_optype($optype);
 
 <img src="https://raw.github.com/krakjoe/explain/master/explain.png" alt="screenshot"/>
 
-See explain.php for helpingz ... [![Build Status](https://travis-ci.org/krakjoe/explain.png?branch=master)](https://travis-ci.org/krakjoe/explain)
+[![Build Status](https://travis-ci.org/krakjoe/explain.png?branch=master)](https://travis-ci.org/krakjoe/explain)
+
+See *explain.php* for helpingz ... 
