@@ -35,7 +35,7 @@ typedef struct _explain_opcode_t {
 
 #define EXPLAIN_FILE   0x00000001
 #define EXPLAIN_STRING 0x00000010
-#define EXPLAIN_OPCODE 0x11111111
+#define EXPLAIN_OPCODE 0x00000011
 
 #define EXPLAIN_OPCODE_NAME(c) \
 	{#c, sizeof(#c), c}
@@ -328,8 +328,6 @@ PHP_FUNCTION(explain)
                 zopline, "op1_type", sizeof("op1_type"), EXPLAIN_OPCODE);
               add_assoc_long_ex(
                 zopline, "op1", sizeof("op1"), opline->op1.jmp_addr - ops->opcodes);
-              add_assoc_long_ex(
-                zopline, "op2_type", sizeof("op2_type"), IS_UNUSED);
             break;
             
             case ZEND_JMPZ:
@@ -353,16 +351,19 @@ PHP_FUNCTION(explain)
             default: {
               add_assoc_long_ex(
                 zopline, "op1_type", sizeof("op1_type"), opline->op1_type);
+              explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &zopline TSRMLS_CC);
               add_assoc_long_ex(
                 zopline, "op2_type", sizeof("op2_type"), opline->op2_type);
-              add_assoc_long_ex(
-                zopline, "extended_value", sizeof("extended_value"), opline->extended_value);
+              explain_zend_op(ops, &opline->op2, opline->op2_type, "op2", sizeof("op2"), &zopline TSRMLS_CC);
               add_assoc_long_ex(
                 zopline, "result_type", sizeof("result_type"), opline->result_type);
-              
-              explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &zopline TSRMLS_CC);
-              explain_zend_op(ops, &opline->op2, opline->op2_type, "op2", sizeof("op2"), &zopline TSRMLS_CC);
+              explain_zend_op(ops, &opline->result, opline->result_type, "result", sizeof("result"), &zopline TSRMLS_CC);
             }
+          }
+          
+          if (opline->extended_value) {
+            add_assoc_long_ex(
+              zopline, "extended_value", sizeof("extended_value"), opline->extended_value);
           }
           
           add_assoc_long_ex(
