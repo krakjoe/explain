@@ -260,8 +260,8 @@ static inline const char * explain_optype(zend_uint type, zval **return_value_pt
    explain some code */
 PHP_FUNCTION(explain)
 {
-	zval *code;
-	zend_ulong options = EXPLAIN_FILE;
+  zval *code;
+  zend_ulong options = EXPLAIN_FILE;
 
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z|l", &code, &options) == FAILURE) {
     return;
