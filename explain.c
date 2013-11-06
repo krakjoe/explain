@@ -210,18 +210,18 @@ static explain_opcode_t opcodes[]= {
 };
 
 static inline const void explain_opcode(long opcode, zval **return_value_ptr TSRMLS_DC) {
-	explain_opcode_t decode = opcodes[opcode];
-
-	if (decode.opcode == opcode) {
-		ZVAL_STRINGL(
-			*return_value_ptr, decode.name, decode.name_len, 1);
+  explain_opcode_t decode = opcodes[opcode];
+  
+  if (decode.opcode == opcode) {
+    ZVAL_STRINGL(
+      *return_value_ptr, decode.name, decode.name_len, 1);
 	} else ZVAL_STRINGL(*return_value_ptr, "unknown", sizeof("unknown"), 1);
 }
 
 static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint type, const char *name, size_t name_len, zval **return_value_ptr TSRMLS_DC) {
   if (type == IS_UNUSED)
     return;
-        
+
   switch (type) {
     case IS_CV: {
       add_assoc_stringl_ex(*return_value_ptr, name, name_len, (char*) ops->vars[op->var].name, ops->vars[op->var].name_len, 1);
@@ -233,12 +233,14 @@ static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint t
     } break;
         
     case IS_CONST: {
-			zval  *copy;
+      zval  *copy;
 
-			ALLOC_ZVAL(copy);
-			*copy = (op->literal->constant);
-			zval_copy_ctor(copy);
-			add_assoc_zval_ex(*return_value_ptr, name, name_len, copy);
+      ALLOC_ZVAL(copy);
+      *copy = (op->literal->constant);
+      zval_copy_ctor(copy);
+      
+      add_assoc_zval_ex(
+        *return_value_ptr, name, name_len, copy);
     } break;
   }
 }
