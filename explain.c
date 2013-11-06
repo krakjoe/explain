@@ -287,7 +287,6 @@ PHP_FUNCTION(explain)
         } else if (options & EXPLAIN_STRING) {
             ops = zend_compile_string(code, "explained" TSRMLS_CC);
         } else {
-            zval_ptr_dtor(&code);
             zend_error(E_WARNING, "invalid options passed to explain (%d), please see documentation", options);
         }
         
