@@ -220,7 +220,7 @@ static inline void explain_opcode(long opcode, zval **return_value_ptr TSRMLS_DC
 }
 
 static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint type, const char *name, size_t name_len, zval **return_value_ptr TSRMLS_DC) {
-  if (type == IS_UNUSED)
+  if (!op || type == IS_UNUSED)
     return;
 
   switch (type) {
@@ -340,23 +340,31 @@ PHP_FUNCTION(explain)
 #ifdef ZEND_JMP_SET_VAR
             case ZEND_JMP_SET_VAR:
 #endif
+              add_assoc_long_ex(
+                zopline, "op1_type", sizeof("op1_type"), opline->op1_type);
               explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &zopline TSRMLS_CC);
               
               add_assoc_long_ex(
                 zopline, "op2_type", sizeof("op2_type"), EXPLAIN_OPCODE);
               add_assoc_long_ex(
                 zopline, "op2", sizeof("op2"), opline->op2.jmp_addr - ops->opcodes);
+
+              add_assoc_long_ex(
+                  zopline, "result_type", sizeof("result_type"), opline->result_type);
+              explain_zend_op(ops, &opline->result, opline->result_type, "result", sizeof("result"), &zopline TSRMLS_CC);
             break;
             
             default: {
               add_assoc_long_ex(
                 zopline, "op1_type", sizeof("op1_type"), opline->op1_type);
               explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &zopline TSRMLS_CC);
+              
               add_assoc_long_ex(
                 zopline, "op2_type", sizeof("op2_type"), opline->op2_type);
               explain_zend_op(ops, &opline->op2, opline->op2_type, "op2", sizeof("op2"), &zopline TSRMLS_CC);
+              
               add_assoc_long_ex(
-                zopline, "result_type", sizeof("result_type"), opline->result_type);
+                  zopline, "result_type", sizeof("result_type"), opline->result_type);
               explain_zend_op(ops, &opline->result, opline->result_type, "result", sizeof("result"), &zopline TSRMLS_CC);
             }
           }
