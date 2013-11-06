@@ -215,7 +215,7 @@ static inline const void explain_opcode(long opcode, zval **return_value_ptr TSR
   if (decode.opcode == opcode) {
     ZVAL_STRINGL(
       *return_value_ptr, decode.name, decode.name_len, 1);
-	} else ZVAL_STRINGL(*return_value_ptr, "unknown", sizeof("unknown"), 1);
+  } else ZVAL_STRINGL(*return_value_ptr, "unknown", sizeof("unknown"), 1);
 }
 
 static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint type, const char *name, size_t name_len, zval **return_value_ptr TSRMLS_DC) {
