@@ -265,6 +265,8 @@ static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint t
       
       add_assoc_zval_ex(
         *return_value_ptr, name, name_len, copy);
+        
+      Z_DELREF_P(copy);
     } break;
   }
 } /* }}} */
@@ -337,7 +339,7 @@ PHP_FUNCTION(explain)
       {
         zval *zopline = NULL;
 
-        ALLOC_ZVAL(zopline);
+        ALLOC_INIT_ZVAL(zopline);
 
         array_init(zopline);
         {
