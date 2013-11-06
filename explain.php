@@ -51,7 +51,7 @@ HERE
     <?php endif; ?>
     
     <?php if(isset($opline["op1_type"]) && $opline["op1_type"] != EXPLAIN_IS_UNUSED) : ?>
-    <td><?=@$opline["op1"] ?></td>
+    <td><?=isset($opline["op1"]) ? $opline["op1"] : "-" ?></td>
     <?php else: ?>
     <td>-</td>
     <?php endif; ?>
@@ -63,7 +63,7 @@ HERE
     <?php endif; ?>
     
     <?php if(isset($opline["op2_type"]) && $opline["op2_type"] != EXPLAIN_IS_UNUSED) : ?>
-    <td><?=@$opline["op2"] ?></td>
+    <td><?=isset($opline["op2"]) ? $opline["op2"] : "-" ?></td>
     <?php else: ?>
     <td>-</td>
     <?php endif; ?>
@@ -75,7 +75,7 @@ HERE
     <?php endif; ?>
     
     <?php if(isset($opline["result_type"]) && $opline["result_type"] != EXPLAIN_IS_UNUSED) : ?>
-    <td><?=@$opline["result"] ?></td>
+    <td><?=isset($opline["result"]) ? $opline["result"] : "-" ?></td>
     <?php else: ?>
     <td>-</td>
     <?php endif; ?>
