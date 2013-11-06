@@ -329,7 +329,7 @@ PHP_FUNCTION(explain)
       efree(ops);
     } else {
       RETURN_FALSE;
-		}
+    }
   }
 }
 /* }}} */
