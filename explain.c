@@ -35,7 +35,6 @@ typedef struct _explain_opcode_t {
 
 #define EXPLAIN_FILE   0x00000001
 #define EXPLAIN_STRING 0x00000010
-#define EXPLAIN_QUIET  0x00000100
 
 #define EXPLAIN_OPCODE_NAME(c) \
     {#c, sizeof(#c), c}
