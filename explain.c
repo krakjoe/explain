@@ -200,7 +200,9 @@ static explain_opcode_t opcodes[]= {
     EXPLAIN_OPCODE_NAME(ZEND_GENERATOR_RETURN),
     EXPLAIN_OPCODE_NAME(ZEND_FAST_CALL),
     EXPLAIN_OPCODE_NAME(ZEND_FAST_RET),
+#ifdef ZEND_RECV_VARIADIC
     EXPLAIN_OPCODE_NAME(ZEND_RECV_VARIADIC),
+#endif
     {NULL, 0, 0}
 };
 
@@ -222,16 +224,19 @@ static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint t
             add_assoc_stringl_ex(*return_value_ptr, name, name_len, (char*) ops->vars[op->var].name, ops->vars[op->var].name_len, 1);
         } break;
         
+        case IS_TMP_VAR: {
+            add_assoc_long_ex(*return_value_ptr, name, name_len, ops->vars - op->var);
+        } break;
+        
         case IS_VAR: {
-            add_assoc_long_ex(*return_value_ptr, name, name_len, (zend_uint) op);
+            add_assoc_long_ex(*return_value_ptr, name, name_len, (zend_ulong*) op);
         } break;
         
         case IS_CONST: {
             zval  *copy;
             
-            MAKE_STD_ZVAL(copy);
+            ALLOC_ZVAL(copy);
             *copy = (op->literal->constant);
-            zval_copy_ctor(copy);
             
             add_assoc_zval_ex(*return_value_ptr, name, name_len, copy);
         } break;
