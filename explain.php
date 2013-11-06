@@ -44,7 +44,7 @@ HERE
     <td><?=$opline["lineno"] ?></td>
     <td><?=$opline["opline"] ?></td>
     <td><?=explain_opcode($opline["opcode"]) ?> (<?=$opline["opcode"] ?>)</td>
-    <?php if(isset($opline["op1_type"]) && $opline["op1_type"] != EXPLAIN_IS_UNUSED) : ?>
+    <?php if(isset($opline["op1_type"]) && $opline["op1_type"] != 8) : ?>
     <td><?=explain_optype($opline["op1_type"]) ?> (<?=$opline["op1_type"] ?>)</td>
     <?php else: ?>
     <td>-</td>

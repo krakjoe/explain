@@ -242,7 +242,25 @@ static inline void explain_opcode(long opcode, zval **return_value_ptr TSRMLS_DC
   } else ZVAL_STRINGL(*return_value_ptr, "unknown", sizeof("unknown"), 1);
 } /* }}} */
 
-static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint type, const char *name, size_t name_len, zval **return_value_ptr TSRMLS_DC) { /* {{{ */
+static int explain_variable(zend_ulong var, zend_llist *vars TSRMLS_DC) { /* {{{ */
+  zend_llist_position position;
+  zend_ulong *cache = zend_llist_get_first_ex(vars, &position);
+  zend_ulong id = 0;
+  
+  while (cache) {
+    if (*cache == var) {
+      return id;
+    }
+    cache = zend_llist_get_next_ex(vars, &position);
+    id++;
+  }
+  
+  zend_llist_add_element(vars, &var);
+  
+  return id;
+} /* }}} */
+
+static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint type, const char *name, size_t name_len, zend_llist *vars, zval **return_value_ptr TSRMLS_DC) { /* {{{ */
   if (!op || type == IS_UNUSED)
     return;
 
@@ -253,7 +271,8 @@ static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint t
 
     case IS_VAR:
     case IS_TMP_VAR: {
-      add_assoc_long_ex(*return_value_ptr, name, name_len, (zend_ulong) ops->vars - op->var);
+      /* convert this to a human friendly number */
+      add_assoc_long_ex(*return_value_ptr, name, name_len, explain_variable((zend_ulong) ops->vars - op->var, vars TSRMLS_CC));
     } break;
 
     case IS_CONST: {
@@ -331,16 +350,19 @@ PHP_FUNCTION(explain)
     }
 
     if (ops) {
-      zend_uint next = 0;
+      zend_uint  next = 0;
+      zend_llist vars;
 
       array_init(return_value);
 
+      zend_llist_init(&vars, sizeof(zend_ulong), NULL, 0);
+   
       do
       {
         zval *zopline = NULL;
-
+        
         ALLOC_INIT_ZVAL(zopline);
-
+        
         array_init(zopline);
         {
           zend_op *opline = &ops->opcodes[next];
@@ -376,7 +398,7 @@ PHP_FUNCTION(explain)
 #endif
               add_assoc_long_ex(
                 zopline, "op1_type", sizeof("op1_type"), opline->op1_type);
-              explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &zopline TSRMLS_CC);
+              explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &vars, &zopline TSRMLS_CC);
               
               add_assoc_long_ex(
                 zopline, "op2_type", sizeof("op2_type"), EXPLAIN_OPLINE);
@@ -385,21 +407,21 @@ PHP_FUNCTION(explain)
 
               add_assoc_long_ex(
                   zopline, "result_type", sizeof("result_type"), opline->result_type);
-              explain_zend_op(ops, &opline->result, opline->result_type, "result", sizeof("result"), &zopline TSRMLS_CC);
+              explain_zend_op(ops, &opline->result, opline->result_type, "result", sizeof("result"), &vars, &zopline TSRMLS_CC);
             break;
             
             default: {
               add_assoc_long_ex(
                 zopline, "op1_type", sizeof("op1_type"), opline->op1_type);
-              explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &zopline TSRMLS_CC);
+              explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &vars, &zopline TSRMLS_CC);
               
               add_assoc_long_ex(
                 zopline, "op2_type", sizeof("op2_type"), opline->op2_type);
-              explain_zend_op(ops, &opline->op2, opline->op2_type, "op2", sizeof("op2"), &zopline TSRMLS_CC);
+              explain_zend_op(ops, &opline->op2, opline->op2_type, "op2", sizeof("op2"), &vars, &zopline TSRMLS_CC);
               
               add_assoc_long_ex(
                   zopline, "result_type", sizeof("result_type"), opline->result_type);
-              explain_zend_op(ops, &opline->result, opline->result_type, "result", sizeof("result"), &zopline TSRMLS_CC);
+              explain_zend_op(ops, &opline->result, opline->result_type, "result", sizeof("result"), &vars, &zopline TSRMLS_CC);
             }
           }
           
@@ -413,7 +435,8 @@ PHP_FUNCTION(explain)
         }
         add_next_index_zval(return_value, zopline);
       } while (++next < ops->last);
-
+      
+      zend_llist_destroy(&vars);
       destroy_op_array(ops TSRMLS_CC);
       efree(ops);
     } else {
