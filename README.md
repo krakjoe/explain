@@ -16,13 +16,13 @@ function explain($code, $type = EXPLAIN_FILE);
 * @param opcode the opcode
 * @return string
 */
-string explain_opcode($opcode);
+function explain_opcode($opcode);
 /*
 * explain_optype
 * @param optype the optype
 * @return string
 */
-string explain_optype($optype);
+function explain_optype($optype);
 ```
 
 <img src="https://raw.github.com/krakjoe/explain/master/explain.png" alt="screenshot"/>
