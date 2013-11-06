@@ -28,7 +28,7 @@ foreach (\$vars as \$var) {
 new stdClass();
 HERE
 ?>
-<?php foreach ($explained=explain($code, EXPLAIN_STRING) as $opline): ?>
+<?php foreach ($explained=explain("/opt/php-zts/htdocs/index.php", EXPLAIN_FILE) as $opline): ?>
 <tr>
     <td><?=$opline["lineno"] ?></td>
     <td><?=$opline["opline"] ?></td>
