@@ -253,7 +253,7 @@ static inline const char * explain_optype(zend_uint type, zval **return_value_pt
 
     default:
       ZVAL_STRINGL(*return_value_ptr, "unknown", sizeof("unknown"), 1); break;
-	}
+  }
 }
 
 /* {{{ proto array explain(string code [, long options])
