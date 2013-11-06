@@ -24,9 +24,9 @@ foreach (\$vars as \$var) {
 }
 HERE
 ?>
-<?php foreach (explain($code, EXPLAIN_STRING) as $opline): ?>
+<?php foreach ($explained=explain($code, EXPLAIN_STRING) as $opline): ?>
 <tr>
-    <td><?=$opline["lineno"] ?></td>
+    <td><?=$opline["opline"] ?></td>
     <td><?=explain_opcode($opline["opcode"]) ?> (<?=$opline["opcode"] ?>)</td>
     <?php if($opline["op1_type"] != 8) : ?>
     <td><?=explain_optype($opline["op1_type"]) ?> (<?=$opline["op1_type"] ?>)</td>
@@ -52,3 +52,6 @@ HERE
 <?php endforeach; ?>
 </tbody>
 </table>
+<pre>
+<?php var_dump($explained); ?>
+</pre>

@@ -35,6 +35,7 @@ typedef struct _explain_opcode_t {
 
 #define EXPLAIN_FILE   0x00000001
 #define EXPLAIN_STRING 0x00000010
+#define EXPLAIN_OPCODE 0x11111111
 
 #define EXPLAIN_OPCODE_NAME(c) \
 	{#c, sizeof(#c), c}
@@ -226,12 +227,12 @@ static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint t
     case IS_CV: {
       add_assoc_stringl_ex(*return_value_ptr, name, name_len, (char*) ops->vars[op->var].name, ops->vars[op->var].name_len, 1);
     } break;
-        
+
     case IS_VAR:
     case IS_TMP_VAR: {
       add_assoc_long_ex(*return_value_ptr, name, name_len, (zend_ulong) ops->vars - op->var);
     } break;
-        
+
     case IS_CONST: {
       zval  *copy;
 
@@ -252,7 +253,9 @@ static inline const char * explain_optype(zend_uint type, zval **return_value_pt
     case IS_VAR: ZVAL_STRINGL(*return_value_ptr, "IS_VAR", sizeof("IS_VAR"), 1); break;
     case IS_CONST: ZVAL_STRINGL(*return_value_ptr, "IS_CONST", sizeof("IS_CONST"), 1); break;
     case IS_UNUSED: ZVAL_STRINGL(*return_value_ptr, "IS_UNUSED", sizeof("IS_UNUSED"), 1); break;
-
+    /* special case for jmp's */
+    case EXPLAIN_OPCODE: ZVAL_STRINGL(*return_value_ptr, "IS_OPCODE", sizeof("IS_OPCODE"), 1); break;
+    
     default:
       ZVAL_STRINGL(*return_value_ptr, "unknown", sizeof("unknown"), 1); break;
   }
@@ -309,20 +312,61 @@ PHP_FUNCTION(explain)
           zend_op *opline = &ops->opcodes[next];
 
           add_assoc_long_ex(
+            zopline, "opline", sizeof("opline"), next);
+          add_assoc_long_ex(
             zopline, "opcode", sizeof("opcode"), opline->opcode);
-          add_assoc_long_ex(
-            zopline, "op1_type", sizeof("op1_type"), opline->op1_type);
-          add_assoc_long_ex(
-            zopline, "op2_type", sizeof("op2_type"), opline->op2_type);
-          add_assoc_long_ex(
-            zopline, "extended_value", sizeof("extended_value"), opline->extended_value);
-          add_assoc_long_ex(
-            zopline, "result_type", sizeof("result_type"), opline->result_type);
+          
+          switch (opline->opcode) {
+            case ZEND_JMP:
+#ifdef ZEND_GOTO
+            case ZEND_GOTO:
+#endif
+#ifdef ZEND_FAST_CALL
+            case ZEND_FAST_CALL:
+#endif
+              add_assoc_long_ex(
+                zopline, "op1_type", sizeof("op1_type"), EXPLAIN_OPCODE);
+              add_assoc_long_ex(
+                zopline, "op1", sizeof("op1"), opline->op1.jmp_addr - ops->opcodes);
+              add_assoc_long_ex(
+                zopline, "op2_type", sizeof("op2_type"), IS_UNUSED);
+            break;
+            
+            case ZEND_JMPZ:
+            case ZEND_JMPNZ:
+            case ZEND_JMPZ_EX:
+            case ZEND_JMPNZ_EX:
+#ifdef ZEND_JMP_SET
+            case ZEND_JMP_SET:
+#endif      
+#ifdef ZEND_JMP_SET_VAR
+            case ZEND_JMP_SET_VAR:
+#endif
+              explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &zopline TSRMLS_CC);
+              
+              add_assoc_long_ex(
+                zopline, "op2_type", sizeof("op2_type"), EXPLAIN_OPCODE);
+              add_assoc_long_ex(
+                zopline, "op2", sizeof("op2"), opline->op2.jmp_addr - ops->opcodes);
+            break;
+            
+            default: {
+              add_assoc_long_ex(
+                zopline, "op1_type", sizeof("op1_type"), opline->op1_type);
+              add_assoc_long_ex(
+                zopline, "op2_type", sizeof("op2_type"), opline->op2_type);
+              add_assoc_long_ex(
+                zopline, "extended_value", sizeof("extended_value"), opline->extended_value);
+              add_assoc_long_ex(
+                zopline, "result_type", sizeof("result_type"), opline->result_type);
+              
+              explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &zopline TSRMLS_CC);
+              explain_zend_op(ops, &opline->op2, opline->op2_type, "op2", sizeof("op2"), &zopline TSRMLS_CC);
+            }
+          }
+          
           add_assoc_long_ex(
             zopline, "lineno", sizeof("lineno"), opline->lineno);
-
-          explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &zopline TSRMLS_CC);
-          explain_zend_op(ops, &opline->op2, opline->op2_type, "op2", sizeof("op2"), &zopline TSRMLS_CC);
         }
         add_next_index_zval(return_value, zopline);
       } while (++next < ops->last);
