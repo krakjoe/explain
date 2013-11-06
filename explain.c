@@ -209,7 +209,7 @@ static explain_opcode_t opcodes[]= {
 	{NULL, 0, 0}
 };
 
-static inline const void explain_opcode(long opcode, zval **return_value_ptr TSRMLS_DC) {
+static inline void explain_opcode(long opcode, zval **return_value_ptr TSRMLS_DC) {
   explain_opcode_t decode = opcodes[opcode];
   
   if (decode.opcode == opcode) {
