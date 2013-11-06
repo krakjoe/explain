@@ -337,85 +337,85 @@ PHP_FUNCTION(explain)
 /* {{{ proto string explain_opcode(integer opcode)
     get the friendly name for an opcode */
 PHP_FUNCTION(explain_opcode) {
-	long opcode;
+  long opcode;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &opcode) == FAILURE) {
-		return;
-	}
+  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &opcode) == FAILURE) {
+    return;
+  }
 
-	explain_opcode(opcode, &return_value TSRMLS_CC);
+  explain_opcode(opcode, &return_value TSRMLS_CC);
 } /* }}} */
 
 /* {{{ proto string explain_optype(integer optype)
     get the friendly name for an optype */
 PHP_FUNCTION(explain_optype) {
-	long optype;
+  long optype;
     
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &optype) == FAILURE) {
-		return;
-	}
+  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &optype) == FAILURE) {
+    return;
+  }
 
-	explain_optype((zend_uchar)optype, &return_value TSRMLS_CC);
+  explain_optype((zend_uchar)optype, &return_value TSRMLS_CC);
 } /* }}} */
 
 /* {{{ PHP_MINFO_FUNCTION
  */
 PHP_MINFO_FUNCTION(explain)
 {
-	php_info_print_table_start();
-	php_info_print_table_header(2, "explain support", "enabled");
-	php_info_print_table_end();
+  php_info_print_table_start();
+  php_info_print_table_header(2, "explain support", "enabled");
+  php_info_print_table_end();
 }
 /* }}} */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_explain, 0, 0, 1)
-	ZEND_ARG_INFO(0, code)
-	ZEND_ARG_INFO(0, options)
+  ZEND_ARG_INFO(0, code)
+  ZEND_ARG_INFO(0, options)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_explain_opcode, 0, 0, 1)
-	ZEND_ARG_INFO(0, opcode)
+  ZEND_ARG_INFO(0, opcode)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_explain_optype, 0, 0, 1)
-	ZEND_ARG_INFO(0, optype)
+  ZEND_ARG_INFO(0, optype)
 ZEND_END_ARG_INFO()
 
 /* {{{ explain_functions[]
  *
  */
 const zend_function_entry explain_functions[] = {
-	PHP_FE(explain,	arginfo_explain)
-	PHP_FE(explain_opcode, arginfo_explain_opcode)
-	PHP_FE(explain_optype, arginfo_explain_optype)
-	PHP_FE_END
+  PHP_FE(explain,	arginfo_explain)
+  PHP_FE(explain_opcode, arginfo_explain_opcode)
+  PHP_FE(explain_optype, arginfo_explain_optype)
+  PHP_FE_END
 };
 /* }}} */
 
 /* {{{ MINIT */
 static PHP_MINIT_FUNCTION(explain) {
-    REGISTER_LONG_CONSTANT("EXPLAIN_STRING", EXPLAIN_STRING, CONST_CS | CONST_PERSISTENT TSRMLS_CC);
-    REGISTER_LONG_CONSTANT("EXPLAIN_FILE", EXPLAIN_FILE, CONST_CS | CONST_PERSISTENT TSRMLS_CC);
+  REGISTER_LONG_CONSTANT("EXPLAIN_STRING", EXPLAIN_STRING, CONST_CS | CONST_PERSISTENT TSRMLS_CC);
+  REGISTER_LONG_CONSTANT("EXPLAIN_FILE", EXPLAIN_FILE, CONST_CS | CONST_PERSISTENT TSRMLS_CC);
 } /* }}} */
 
 /* {{{ explain_module_entry
  */
 zend_module_entry explain_module_entry = {
-	STANDARD_MODULE_HEADER,
-	PHP_EXPLAIN_EXTNAME,
-	explain_functions,
-	PHP_MINIT(explain),
-	NULL,
-	NULL,
-	NULL,
-	PHP_MINFO(explain),
-	PHP_EXPLAIN_VERSION,
-	STANDARD_MODULE_PROPERTIES
+  STANDARD_MODULE_HEADER,
+  PHP_EXPLAIN_EXTNAME,
+  explain_functions,
+  PHP_MINIT(explain),
+  NULL,
+  NULL,
+  NULL,
+  PHP_MINFO(explain),
+  PHP_EXPLAIN_VERSION,
+  STANDARD_MODULE_PROPERTIES
 };
 /* }}} */
 
 #ifdef COMPILE_DL_EXPLAIN
-ZEND_GET_MODULE(explain)
+  ZEND_GET_MODULE(explain)
 #endif
 
 /*
