@@ -263,33 +263,33 @@ PHP_FUNCTION(explain)
 	zval *code;
 	zend_ulong options = EXPLAIN_FILE;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z|l", &code, &options) == FAILURE) {
-		return;
-	}
+  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z|l", &code, &options) == FAILURE) {
+    return;
+  }
 
 	{
 		zend_file_handle fh;
 		zend_op_array *ops = NULL;
 
-		if (options & EXPLAIN_FILE) {
-			if (php_stream_open_for_zend_ex(Z_STRVAL_P(code), &fh, USE_PATH|STREAM_OPEN_FOR_INCLUDE TSRMLS_CC) == SUCCESS) {
-				int dummy = 1;
+    if (options & EXPLAIN_FILE) {
+      if (php_stream_open_for_zend_ex(Z_STRVAL_P(code), &fh, USE_PATH|STREAM_OPEN_FOR_INCLUDE TSRMLS_CC) == SUCCESS) {
+        int dummy = 1;
 
-				if (zend_hash_add(&EG(included_files), fh.opened_path, strlen(fh.opened_path)+1, (void**) &dummy, sizeof(int), NULL) == SUCCESS) {
-					ops = zend_compile_file(
-						&fh, ZEND_INCLUDE TSRMLS_CC);
-					zend_destroy_file_handle(&fh TSRMLS_CC);
-				} else {
-					zend_file_handle_dtor(&fh TSRMLS_CC);
-				}
-			} else {
-				RETURN_FALSE;
-			}
-        } else if (options & EXPLAIN_STRING) {
-			ops = zend_compile_string(code, "explained" TSRMLS_CC);
+        if (zend_hash_add(&EG(included_files), fh.opened_path, strlen(fh.opened_path)+1, (void**) &dummy, sizeof(int), NULL) == SUCCESS) {
+          ops = zend_compile_file(
+            &fh, ZEND_INCLUDE TSRMLS_CC);
+          zend_destroy_file_handle(&fh TSRMLS_CC);
         } else {
-			zend_error(E_WARNING, "invalid options passed to explain (%d), please see documentation", options);
-		}
+          zend_file_handle_dtor(&fh TSRMLS_CC);
+        }
+      } else {
+        RETURN_FALSE;
+      }
+    } else if (options & EXPLAIN_STRING) {
+      ops = zend_compile_string(code, "explained" TSRMLS_CC);
+    } else {
+      zend_error(E_WARNING, "invalid options passed to explain (%d), please see documentation", options);
+    }
 
 		if (ops) {
 			zend_uint next = 0;
