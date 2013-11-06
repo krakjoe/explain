@@ -26,3 +26,7 @@ function explain_optype($optype);
 ```
 
 <img src="https://raw.github.com/krakjoe/explain/master/explain.png" alt="screenshot"/>
+
+See explain.php for helpingz ...
+
+Lastly, explain all the things :)
