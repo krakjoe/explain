@@ -296,32 +296,32 @@ PHP_FUNCTION(explain)
 
 			array_init(return_value);
 
-            do {
-				zval *zopline = NULL;
+      do
+      {
+        zval *zopline = NULL;
 
-				MAKE_STD_ZVAL(zopline);
+        MAKE_STD_ZVAL(zopline);
 
-				array_init(zopline);
-				{
-					zend_op *opline = &ops->opcodes[next];
+        array_init(zopline);
+        {
+          zend_op *opline = &ops->opcodes[next];
 
-					add_assoc_long_ex(
-						zopline, "opcode", sizeof("opcode"), opline->opcode);
-					add_assoc_long_ex(
-						zopline, "op1_type", sizeof("op1_type"), opline->op1_type);
-					add_assoc_long_ex(
-						zopline, "op2_type", sizeof("op2_type"), opline->op2_type);
-					add_assoc_long_ex(
-						zopline, "extended_value", sizeof("extended_value"), opline->extended_value);
-					add_assoc_long_ex(
-						zopline, "result_type", sizeof("result_type"), opline->result_type);
-					add_assoc_long_ex(
-						zopline, "lineno", sizeof("lineno"), opline->lineno);
+          add_assoc_long_ex(
+            zopline, "opcode", sizeof("opcode"), opline->opcode);
+          add_assoc_long_ex(
+            zopline, "op1_type", sizeof("op1_type"), opline->op1_type);
+          add_assoc_long_ex(
+            zopline, "op2_type", sizeof("op2_type"), opline->op2_type);
+          add_assoc_long_ex(
+            zopline, "extended_value", sizeof("extended_value"), opline->extended_value);
+          add_assoc_long_ex(
+            zopline, "result_type", sizeof("result_type"), opline->result_type);
+          add_assoc_long_ex(
+            zopline, "lineno", sizeof("lineno"), opline->lineno);
 
-					explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &zopline TSRMLS_CC);
-					explain_zend_op(ops, &opline->op2, opline->op2_type, "op2", sizeof("op2"), &zopline TSRMLS_CC);
-				}
-
+          explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &zopline TSRMLS_CC);
+          explain_zend_op(ops, &opline->op2, opline->op2_type, "op2", sizeof("op2"), &zopline TSRMLS_CC);
+        }
 				add_next_index_zval(return_value, zopline);
 			} while (++next < ops->last);
 
