@@ -267,9 +267,9 @@ PHP_FUNCTION(explain)
     return;
   }
 
-	{
-		zend_file_handle fh;
-		zend_op_array *ops = NULL;
+  {
+    zend_file_handle fh;
+    zend_op_array *ops = NULL;
 
     if (options & EXPLAIN_FILE) {
       if (php_stream_open_for_zend_ex(Z_STRVAL_P(code), &fh, USE_PATH|STREAM_OPEN_FOR_INCLUDE TSRMLS_CC) == SUCCESS) {
@@ -291,10 +291,10 @@ PHP_FUNCTION(explain)
       zend_error(E_WARNING, "invalid options passed to explain (%d), please see documentation", options);
     }
 
-		if (ops) {
-			zend_uint next = 0;
+    if (ops) {
+      zend_uint next = 0;
 
-			array_init(return_value);
+      array_init(return_value);
 
       do
       {
