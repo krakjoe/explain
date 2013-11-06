@@ -1,5 +1,5 @@
 --TEST--
-Check basic functionality
+Check extended functionality
 --SKIPIF--
 <?php if (!extension_loaded("explain")) print "skip"; ?>
 --FILE--
