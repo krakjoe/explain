@@ -322,13 +322,13 @@ PHP_FUNCTION(explain)
           explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &zopline TSRMLS_CC);
           explain_zend_op(ops, &opline->op2, opline->op2_type, "op2", sizeof("op2"), &zopline TSRMLS_CC);
         }
-				add_next_index_zval(return_value, zopline);
-			} while (++next < ops->last);
+        add_next_index_zval(return_value, zopline);
+      } while (++next < ops->last);
 
-			destroy_op_array(ops TSRMLS_CC);
-			efree(ops);
+      destroy_op_array(ops TSRMLS_CC);
+      efree(ops);
 		} else {
-			RETURN_FALSE;
+      RETURN_FALSE;
 		}
 	}
 }
