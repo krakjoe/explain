@@ -219,40 +219,40 @@ static inline const void explain_opcode(long opcode, zval **return_value_ptr TSR
 }
 
 static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint type, const char *name, size_t name_len, zval **return_value_ptr TSRMLS_DC) {
-	if (type == IS_UNUSED)
-		return;
+  if (type == IS_UNUSED)
+    return;
         
-	switch (type) {
-		case IS_CV: {
-			add_assoc_stringl_ex(*return_value_ptr, name, name_len, (char*) ops->vars[op->var].name, ops->vars[op->var].name_len, 1);
-		} break;
+  switch (type) {
+    case IS_CV: {
+      add_assoc_stringl_ex(*return_value_ptr, name, name_len, (char*) ops->vars[op->var].name, ops->vars[op->var].name_len, 1);
+    } break;
         
-		case IS_VAR:
-		case IS_TMP_VAR: {
-			add_assoc_long_ex(*return_value_ptr, name, name_len, ops->vars - op->var);
-		} break;
+    case IS_VAR:
+    case IS_TMP_VAR: {
+      add_assoc_long_ex(*return_value_ptr, name, name_len, ops->vars - op->var);
+    } break;
         
-		case IS_CONST: {
+    case IS_CONST: {
 			zval  *copy;
 
 			ALLOC_ZVAL(copy);
 			*copy = (op->literal->constant);
 			zval_copy_ctor(copy);
 			add_assoc_zval_ex(*return_value_ptr, name, name_len, copy);
-		} break;
-	}
+    } break;
+  }
 }
 
 static inline const char * explain_optype(zend_uint type, zval **return_value_ptr TSRMLS_DC) {
-	switch (type) {
-		case IS_CV: ZVAL_STRINGL(*return_value_ptr, "IS_CV", sizeof("IS_CV"), 1); break;
-		case IS_TMP_VAR: ZVAL_STRINGL(*return_value_ptr, "IS_TMP_VAR", sizeof("IS_TMP_VAR"), 1); break;
-		case IS_VAR: ZVAL_STRINGL(*return_value_ptr, "IS_VAR", sizeof("IS_VAR"), 1); break;
-		case IS_CONST: ZVAL_STRINGL(*return_value_ptr, "IS_CONST", sizeof("IS_CONST"), 1); break;
-		case IS_UNUSED: ZVAL_STRINGL(*return_value_ptr, "IS_UNUSED", sizeof("IS_UNUSED"), 1); break;
+  switch (type) {
+    case IS_CV: ZVAL_STRINGL(*return_value_ptr, "IS_CV", sizeof("IS_CV"), 1); break;
+    case IS_TMP_VAR: ZVAL_STRINGL(*return_value_ptr, "IS_TMP_VAR", sizeof("IS_TMP_VAR"), 1); break;
+    case IS_VAR: ZVAL_STRINGL(*return_value_ptr, "IS_VAR", sizeof("IS_VAR"), 1); break;
+    case IS_CONST: ZVAL_STRINGL(*return_value_ptr, "IS_CONST", sizeof("IS_CONST"), 1); break;
+    case IS_UNUSED: ZVAL_STRINGL(*return_value_ptr, "IS_UNUSED", sizeof("IS_UNUSED"), 1); break;
 
-        default:
-			ZVAL_STRINGL(*return_value_ptr, "unknown", sizeof("unknown"), 1); break;
+    default:
+      ZVAL_STRINGL(*return_value_ptr, "unknown", sizeof("unknown"), 1); break;
 	}
 }
 
