@@ -7,6 +7,7 @@ td, th {
 <thead>
     <tr>
         <th>LINE</th>
+        <th>OPLINE</th>
         <th>OPCODE</th>
         <th>OP1(TYPE)</th>
         <th>OP2(TYPE)</th>
@@ -29,6 +30,7 @@ HERE
 ?>
 <?php foreach ($explained=explain($code, EXPLAIN_STRING) as $opline): ?>
 <tr>
+    <td><?=$opline["lineno"] ?></td>
     <td><?=$opline["opline"] ?></td>
     <td><?=explain_opcode($opline["opcode"]) ?> (<?=$opline["opcode"] ?>)</td>
     <?php if(isset($opline["op1_type"]) && $opline["op1_type"] != 8) : ?>

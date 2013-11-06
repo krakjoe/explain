@@ -35,7 +35,7 @@ typedef struct _explain_opcode_t {
 
 #define EXPLAIN_FILE   0x00000001
 #define EXPLAIN_STRING 0x00000010
-#define EXPLAIN_OPCODE 0x00000011
+#define EXPLAIN_OPLINE 0x00000011
 
 #define EXPLAIN_OPCODE_NAME(c) \
 	{#c, sizeof(#c), c}
@@ -254,7 +254,7 @@ static inline const char * explain_optype(zend_uint type, zval **return_value_pt
     case IS_CONST: ZVAL_STRINGL(*return_value_ptr, "IS_CONST", sizeof("IS_CONST"), 1); break;
     case IS_UNUSED: ZVAL_STRINGL(*return_value_ptr, "IS_UNUSED", sizeof("IS_UNUSED"), 1); break;
     /* special case for jmp's */
-    case EXPLAIN_OPCODE: ZVAL_STRINGL(*return_value_ptr, "IS_OPCODE", sizeof("IS_OPCODE"), 1); break;
+    case EXPLAIN_OPLINE: ZVAL_STRINGL(*return_value_ptr, "IS_OPLINE", sizeof("IS_OPLINE"), 1); break;
     
     default:
       ZVAL_STRINGL(*return_value_ptr, "unknown", sizeof("unknown"), 1); break;
@@ -325,7 +325,7 @@ PHP_FUNCTION(explain)
             case ZEND_FAST_CALL:
 #endif
               add_assoc_long_ex(
-                zopline, "op1_type", sizeof("op1_type"), EXPLAIN_OPCODE);
+                zopline, "op1_type", sizeof("op1_type"), EXPLAIN_OPLINE);
               add_assoc_long_ex(
                 zopline, "op1", sizeof("op1"), opline->op1.jmp_addr - ops->opcodes);
             break;
@@ -345,7 +345,7 @@ PHP_FUNCTION(explain)
               explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &zopline TSRMLS_CC);
               
               add_assoc_long_ex(
-                zopline, "op2_type", sizeof("op2_type"), EXPLAIN_OPCODE);
+                zopline, "op2_type", sizeof("op2_type"), EXPLAIN_OPLINE);
               add_assoc_long_ex(
                 zopline, "op2", sizeof("op2"), opline->op2.jmp_addr - ops->opcodes);
 
