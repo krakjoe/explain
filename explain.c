@@ -229,7 +229,7 @@ static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint t
         
     case IS_VAR:
     case IS_TMP_VAR: {
-      add_assoc_long_ex(*return_value_ptr, name, name_len, ops->vars - op->var);
+      add_assoc_long_ex(*return_value_ptr, name, name_len, (zend_ulong) ops->vars - op->var);
     } break;
         
     case IS_CONST: {
