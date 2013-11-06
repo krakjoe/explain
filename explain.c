@@ -237,7 +237,7 @@ static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint t
             
             ALLOC_ZVAL(copy);
             *copy = (op->literal->constant);
-            
+            zval_copy_ctor(copy);
             add_assoc_zval_ex(*return_value_ptr, name, name_len, copy);
         } break;
     }
@@ -395,7 +395,6 @@ const zend_function_entry explain_functions[] = {
 static PHP_MINIT_FUNCTION(explain) {
     REGISTER_LONG_CONSTANT("EXPLAIN_STRING", EXPLAIN_STRING, CONST_CS | CONST_PERSISTENT TSRMLS_CC);
     REGISTER_LONG_CONSTANT("EXPLAIN_FILE", EXPLAIN_FILE, CONST_CS | CONST_PERSISTENT TSRMLS_CC);
-    REGISTER_LONG_CONSTANT("EXPLAIN_QUIET", EXPLAIN_QUIET, CONST_CS | CONST_PERSISTENT TSRMLS_CC);
 } /* }}} */
 
 /* {{{ explain_module_entry
