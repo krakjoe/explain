@@ -66,7 +66,7 @@
 <?php
 $input = $argv[1];
 $code = file_get_contents($argv[1]);
-$lines = preg_split("~(\r|\n)~", $code);
+$lines = preg_split("~(\n)~", $code);
 $lastline = 1;
 $explained = explain($input, EXPLAIN_FILE);
 ?>
