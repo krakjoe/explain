@@ -1,3 +1,21 @@
+<?php
+$input = $argv[1];
+if (!$input) {
+  /* TODO(dm) do something pretty :) */
+  die("no input");
+}
+
+$code = file_get_contents($argv[1]);
+if (!$code) {
+  /* TODO(dm) do something pretty :) */
+  die("no code");
+}
+
+$lines = preg_split("~(\n)~", $code);
+$lastline = 1;
+$explained = explain($input, EXPLAIN_FILE, $classes, $functions);
+/* TODO(dm) in $classes and $functions are op arrays for everything in userland */
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,7 +24,7 @@
   <meta name="description" content="">
   <meta name="author" content="krakjoe@php.net && dm@php.net">
 
-  <title>explain</title>
+  <title>Explain: <?=$input ?></title>
 
   <script src="http://php.net.so/static/js/highlight.min.js"></script>
 
@@ -63,13 +81,9 @@
     </tr>
 </thead>
 <tbody>
-<?php
-$input = $argv[1];
-$code = file_get_contents($argv[1]);
-$lines = preg_split("~(\n)~", $code);
-$lastline = 1;
-$explained = explain($input, EXPLAIN_FILE);
-?>
+<tr>
+  <th colspan="9"><?=$input ?></th>
+</tr>
 <?php foreach ($explained as $num => $opline): ?>
 <tr>
     <td>&nbsp;</td>
@@ -117,7 +131,7 @@ $explained = explain($input, EXPLAIN_FILE);
   <td colspan="8" class="code">
   <pre>
     <code class="php">
-      <?=htmlentities($lines[$opline["lineno"]-1]); ?>
+      <?=htmlentities(rtrim($lines[$opline["lineno"]-1])); ?>
     </code>
   </pre>
   </td>

@@ -314,14 +314,109 @@ static inline const char * explain_optype(zend_uint type, zval **return_value_pt
   }
 } /* }}} */
 
-/* {{{ proto array explain(string code [, long options])
+
+static inline void explain_op_array(zend_op_array *ops, zval *return_value TSRMLS_DC) { /* {{{ */
+  if (ops) {
+    zend_uint  next = 0;
+    zend_llist vars;
+
+    zend_llist_init(&vars, sizeof(zend_ulong), NULL, 0);
+
+    do
+    {
+      zval *zopline = NULL;
+      
+      ALLOC_INIT_ZVAL(zopline);
+      
+      array_init(zopline);
+      {
+        zend_op *opline = &ops->opcodes[next];
+
+        add_assoc_long_ex(
+          zopline, "opline", sizeof("opline"), next);
+        add_assoc_long_ex(
+          zopline, "opcode", sizeof("opcode"), opline->opcode);
+        
+        switch (opline->opcode) {
+          case ZEND_JMP:
+#ifdef ZEND_GOTO
+          case ZEND_GOTO:
+#endif
+#ifdef ZEND_FAST_CALL
+          case ZEND_FAST_CALL:
+#endif
+            add_assoc_long_ex(
+              zopline, "op1_type", sizeof("op1_type"), EXPLAIN_OPLINE);
+            add_assoc_long_ex(
+              zopline, "op1", sizeof("op1"), opline->op1.jmp_addr - ops->opcodes);
+          break;
+          
+          case ZEND_JMPZ:
+          case ZEND_JMPNZ:
+          case ZEND_JMPZ_EX:
+          case ZEND_JMPNZ_EX:
+#ifdef ZEND_JMP_SET
+          case ZEND_JMP_SET:
+#endif      
+#ifdef ZEND_JMP_SET_VAR
+          case ZEND_JMP_SET_VAR:
+#endif
+            add_assoc_long_ex(
+              zopline, "op1_type", sizeof("op1_type"), opline->op1_type);
+            explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &vars, &zopline TSRMLS_CC);
+            
+            add_assoc_long_ex(
+              zopline, "op2_type", sizeof("op2_type"), EXPLAIN_OPLINE);
+            add_assoc_long_ex(
+              zopline, "op2", sizeof("op2"), opline->op2.jmp_addr - ops->opcodes);
+
+            add_assoc_long_ex(
+                zopline, "result_type", sizeof("result_type"), opline->result_type);
+            explain_zend_op(ops, &opline->result, opline->result_type, "result", sizeof("result"), &vars, &zopline TSRMLS_CC);
+          break;
+          
+          default: {
+            add_assoc_long_ex(
+              zopline, "op1_type", sizeof("op1_type"), opline->op1_type);
+            explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &vars, &zopline TSRMLS_CC);
+            
+            add_assoc_long_ex(
+              zopline, "op2_type", sizeof("op2_type"), opline->op2_type);
+            explain_zend_op(ops, &opline->op2, opline->op2_type, "op2", sizeof("op2"), &vars, &zopline TSRMLS_CC);
+            
+            add_assoc_long_ex(
+                zopline, "result_type", sizeof("result_type"), opline->result_type);
+            explain_zend_op(ops, &opline->result, opline->result_type, "result", sizeof("result"), &vars, &zopline TSRMLS_CC);
+          }
+        }
+        
+        if (opline->extended_value) {
+          add_assoc_long_ex(
+            zopline, "extended_value", sizeof("extended_value"), opline->extended_value);
+        }
+        
+        add_assoc_long_ex(
+          zopline, "lineno", sizeof("lineno"), opline->lineno);
+      }
+      add_next_index_zval(return_value, zopline);
+    } while (++next < ops->last);
+    
+    zend_llist_destroy(&vars);
+  } else {
+    RETURN_FALSE;
+  }
+}
+
+/* {{{ proto array explain(string code [, long options, array &classes, array &functions])
    explain some code */
 PHP_FUNCTION(explain)
 {
-  zval *code;
+  zval *code = NULL, 
+       *classes = NULL, 
+       *functions = NULL;
   zend_ulong options = EXPLAIN_FILE;
 
-  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z|l", &code, &options) == FAILURE) {
+  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z|lzz", &code, &options, &classes, &functions) == FAILURE) {
     return;
   }
 
@@ -349,99 +444,75 @@ PHP_FUNCTION(explain)
       zend_error(E_WARNING, "invalid options passed to explain (%d), please see documentation", options);
     }
 
-    if (ops) {
-      zend_uint  next = 0;
-      zend_llist vars;
-
-      array_init(return_value);
-
-      zend_llist_init(&vars, sizeof(zend_ulong), NULL, 0);
-   
-      do
-      {
-        zval *zopline = NULL;
-        
-        ALLOC_INIT_ZVAL(zopline);
-        
-        array_init(zopline);
-        {
-          zend_op *opline = &ops->opcodes[next];
-
-          add_assoc_long_ex(
-            zopline, "opline", sizeof("opline"), next);
-          add_assoc_long_ex(
-            zopline, "opcode", sizeof("opcode"), opline->opcode);
-          
-          switch (opline->opcode) {
-            case ZEND_JMP:
-#ifdef ZEND_GOTO
-            case ZEND_GOTO:
-#endif
-#ifdef ZEND_FAST_CALL
-            case ZEND_FAST_CALL:
-#endif
-              add_assoc_long_ex(
-                zopline, "op1_type", sizeof("op1_type"), EXPLAIN_OPLINE);
-              add_assoc_long_ex(
-                zopline, "op1", sizeof("op1"), opline->op1.jmp_addr - ops->opcodes);
-            break;
-            
-            case ZEND_JMPZ:
-            case ZEND_JMPNZ:
-            case ZEND_JMPZ_EX:
-            case ZEND_JMPNZ_EX:
-#ifdef ZEND_JMP_SET
-            case ZEND_JMP_SET:
-#endif      
-#ifdef ZEND_JMP_SET_VAR
-            case ZEND_JMP_SET_VAR:
-#endif
-              add_assoc_long_ex(
-                zopline, "op1_type", sizeof("op1_type"), opline->op1_type);
-              explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &vars, &zopline TSRMLS_CC);
-              
-              add_assoc_long_ex(
-                zopline, "op2_type", sizeof("op2_type"), EXPLAIN_OPLINE);
-              add_assoc_long_ex(
-                zopline, "op2", sizeof("op2"), opline->op2.jmp_addr - ops->opcodes);
-
-              add_assoc_long_ex(
-                  zopline, "result_type", sizeof("result_type"), opline->result_type);
-              explain_zend_op(ops, &opline->result, opline->result_type, "result", sizeof("result"), &vars, &zopline TSRMLS_CC);
-            break;
-            
-            default: {
-              add_assoc_long_ex(
-                zopline, "op1_type", sizeof("op1_type"), opline->op1_type);
-              explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &vars, &zopline TSRMLS_CC);
-              
-              add_assoc_long_ex(
-                zopline, "op2_type", sizeof("op2_type"), opline->op2_type);
-              explain_zend_op(ops, &opline->op2, opline->op2_type, "op2", sizeof("op2"), &vars, &zopline TSRMLS_CC);
-              
-              add_assoc_long_ex(
-                  zopline, "result_type", sizeof("result_type"), opline->result_type);
-              explain_zend_op(ops, &opline->result, opline->result_type, "result", sizeof("result"), &vars, &zopline TSRMLS_CC);
-            }
-          }
-          
-          if (opline->extended_value) {
-            add_assoc_long_ex(
-              zopline, "extended_value", sizeof("extended_value"), opline->extended_value);
-          }
-          
-          add_assoc_long_ex(
-            zopline, "lineno", sizeof("lineno"), opline->lineno);
-        }
-        add_next_index_zval(return_value, zopline);
-      } while (++next < ops->last);
+    array_init(return_value);
+    
+    explain_op_array(ops, return_value TSRMLS_CC);
+    
+    if (classes) {
+      HashPosition position[2];
+      zend_class_entry **ppce, *pce;
       
-      zend_llist_destroy(&vars);
-      destroy_op_array(ops TSRMLS_CC);
-      efree(ops);
-    } else {
-      RETURN_FALSE;
+      array_init(classes);
+      
+      for (zend_hash_internal_pointer_reset_ex(CG(class_table), &position[0]);
+          zend_hash_get_current_data_ex(CG(class_table), (void**) &ppce, &position[0]) == SUCCESS && (pce = *ppce);
+          zend_hash_move_forward_ex(CG(class_table), &position[0])) {
+          
+          if (pce->type  == ZEND_USER_CLASS) {
+          
+            zval *zce;
+            zend_function *pfe;
+            
+            ALLOC_INIT_ZVAL(zce);
+            
+            array_init(zce);
+            
+            for (zend_hash_internal_pointer_reset_ex(&pce->function_table, &position[1]);
+                 zend_hash_get_current_data_ex(&pce->function_table, (void**) &pfe, &position[1]) == SUCCESS;
+                 zend_hash_move_forward_ex(&pce->function_table, &position[1])) {
+                 if (pfe->common.type == ZEND_USER_FUNCTION) {
+                   zval *zfe;
+                 
+                   ALLOC_INIT_ZVAL(zfe);
+                   
+                   array_init(zfe);
+                   
+                   explain_op_array(&pfe->op_array, zfe TSRMLS_CC);
+                   
+                   add_assoc_zval_ex(zce, pfe->common.function_name, strlen(pfe->common.function_name)+1, zfe);
+                 }
+            }
+            
+            add_assoc_zval_ex(classes, pce->name, pce->name_length+1, zce);
+          }
+      }
     }
+    
+    destroy_op_array(ops TSRMLS_CC);
+    efree(ops);
+    
+    if (functions) {
+      HashPosition position;
+      zend_function *pfe;
+      
+      array_init(functions);
+      
+      for (zend_hash_internal_pointer_reset_ex(CG(function_table), &position);
+           zend_hash_get_current_data_ex(CG(function_table), (void**) &pfe, &position) == SUCCESS;
+           zend_hash_move_forward_ex(CG(function_table), &position)) {
+           if (pfe->common.type == ZEND_USER_FUNCTION) {
+             zval *zfe;
+           
+             ALLOC_INIT_ZVAL(zfe);
+             
+             array_init(zfe);
+             
+             explain_op_array(&pfe->op_array, zfe TSRMLS_CC);
+             
+             add_assoc_zval_ex(functions, pfe->common.function_name, strlen(pfe->common.function_name)+1, zfe);
+           }
+      }
+    }    
   }
 }
 /* }}} */
@@ -483,6 +554,8 @@ PHP_MINFO_FUNCTION(explain)
 ZEND_BEGIN_ARG_INFO_EX(arginfo_explain, 0, 0, 1)
   ZEND_ARG_INFO(0, code)
   ZEND_ARG_INFO(0, options)
+  ZEND_ARG_INFO(1, classes)
+  ZEND_ARG_INFO(1, functions)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_explain_opcode, 0, 0, 1)
