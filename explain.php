@@ -1,6 +1,14 @@
 <style type="text/css">
-td, th {
-    text-align: center;
+* {
+  padding: 0px;
+  margin: 0px;
+}
+td, th { text-align: center; }
+td.code {
+  text-align: left;
+  background-color: #ddd;
+  border-left: 15px solid #eee;
+  padding: 3px;
 }
 </style>
 <table width="100%">
@@ -37,9 +45,12 @@ include ("vendor/autoload.php");
 });
 
 \$app->run();
-HERE
+HERE;
+$lines = preg_split("~(\r|\n)~", $code);
+$lastline = 1;
+$explained = explain($code, EXPLAIN_STRING);
 ?>
-<?php foreach ($explained=explain($code, EXPLAIN_STRING) as $opline): ?>
+<?php foreach ($explained as $num => $opline): ?>
 <tr>
     <td><?=$opline["lineno"] ?></td>
     <td><?=$opline["opline"] ?></td>
@@ -80,6 +91,15 @@ HERE
     <td>-</td>
     <?php endif; ?>
 </tr>
+<?php if (@$opline["lineno"] != @$explained[$num+1]["lineno"]): ?>
+<tr>
+  <td colspan="9" class="code">
+  <pre>
+    <?=htmlentities($lines[$opline["lineno"]-1]); ?>
+  </pre>
+  </td>
+</tr>
+<?php endif; ?>
 <?php endforeach; ?>
 </tbody>
 </table>
