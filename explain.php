@@ -66,7 +66,7 @@ $explained = explain($code, EXPLAIN_STRING);
     <?php endif; ?>
     
     <?php if(isset($opline["op1_type"]) && $opline["op1_type"] != EXPLAIN_IS_UNUSED) : ?>
-    <td><![CDATA[<?=isset($opline["op1"]) ? $opline["op1"] : "-" ?>]]></td>
+    <td><?=isset($opline["op1"]) ? $opline["op1"] : "-" ?></td>
     <?php else: ?>
     <td>-</td>
     <?php endif; ?>
@@ -78,7 +78,7 @@ $explained = explain($code, EXPLAIN_STRING);
     <?php endif; ?>
     
     <?php if(isset($opline["op2_type"]) && $opline["op2_type"] != EXPLAIN_IS_UNUSED) : ?>
-    <td><![CDATA[<?=isset($opline["op2"]) ? $opline["op2"] : "-" ?>]]></td>
+    <td><?=isset($opline["op2"]) ? $opline["op2"] : "-" ?></td>
     <?php else: ?>
     <td>-</td>
     <?php endif; ?>
@@ -90,7 +90,7 @@ $explained = explain($code, EXPLAIN_STRING);
     <?php endif; ?>
     
     <?php if(isset($opline["result_type"]) && $opline["result_type"] != EXPLAIN_IS_UNUSED) : ?>
-    <td><![CDATA[<?=isset($opline["result"]) ? $opline["result"] : "-" ?>]]></td>
+    <td><?=isset($opline["result"]) ? $opline["result"] : "-" ?></td>
     <?php else: ?>
     <td>-</td>
     <?php endif; ?>
