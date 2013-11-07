@@ -28,3 +28,10 @@ function explain_optype($optype);
 [![Build Status](https://travis-ci.org/krakjoe/explain.png?branch=master)](https://travis-ci.org/krakjoe/explain)
 
 See *explain.php* for helpingz ... 
+
+Execution
+=========
+
+```
+php explain.php /path/to/file.php > output.html
+```
