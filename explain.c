@@ -38,7 +38,7 @@ typedef struct _explain_opcode_t {
 #define EXPLAIN_OPLINE 0x00000011
 
 #define EXPLAIN_OPCODE_NAME(c) \
-	{#c, sizeof(#c), c}
+	{#c, sizeof(#c)-1, c}
 
 static explain_opcode_t opcodes[]= {
 	EXPLAIN_OPCODE_NAME(ZEND_NOP),
@@ -239,7 +239,7 @@ static inline void explain_opcode(long opcode, zval **return_value_ptr TSRMLS_DC
   if (decode.opcode == opcode) {
     ZVAL_STRINGL(
       *return_value_ptr, decode.name, decode.name_len, 1);
-  } else ZVAL_STRINGL(*return_value_ptr, "unknown", sizeof("unknown"), 1);
+  } else ZVAL_STRINGL(*return_value_ptr, "unknown", strlen("unknown"), 1);
 } /* }}} */
 
 static int explain_variable(zend_ulong var, zend_llist *vars TSRMLS_DC) { /* {{{ */
@@ -292,24 +292,24 @@ static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint t
 
 static inline const char * explain_optype(zend_uint type, zval **return_value_ptr TSRMLS_DC) { /* {{{ */
   switch (type) {
-    case IS_CV: ZVAL_STRINGL(*return_value_ptr, "IS_CV", sizeof("IS_CV"), 1); break;
-    case IS_TMP_VAR: ZVAL_STRINGL(*return_value_ptr, "IS_TMP_VAR", sizeof("IS_TMP_VAR"), 1); break;
-    case IS_VAR: ZVAL_STRINGL(*return_value_ptr, "IS_VAR", sizeof("IS_VAR"), 1); break;
-    case IS_CONST: ZVAL_STRINGL(*return_value_ptr, "IS_CONST", sizeof("IS_CONST"), 1); break;
-    case IS_UNUSED: ZVAL_STRINGL(*return_value_ptr, "IS_UNUSED", sizeof("IS_UNUSED"), 1); break;
+    case IS_CV: ZVAL_STRINGL(*return_value_ptr, "IS_CV", strlen("IS_CV"), 1); break;
+    case IS_TMP_VAR: ZVAL_STRINGL(*return_value_ptr, "IS_TMP_VAR", strlen("IS_TMP_VAR"), 1); break;
+    case IS_VAR: ZVAL_STRINGL(*return_value_ptr, "IS_VAR", strlen("IS_VAR"), 1); break;
+    case IS_CONST: ZVAL_STRINGL(*return_value_ptr, "IS_CONST", strlen("IS_CONST"), 1); break;
+    case IS_UNUSED: ZVAL_STRINGL(*return_value_ptr, "IS_UNUSED", strlen("IS_UNUSED"), 1); break;
     /* special case for jmp's */
-    case EXPLAIN_OPLINE: ZVAL_STRINGL(*return_value_ptr, "IS_OPLINE", sizeof("IS_OPLINE"), 1); break;
+    case EXPLAIN_OPLINE: ZVAL_STRINGL(*return_value_ptr, "IS_OPLINE", strlen("IS_OPLINE"), 1); break;
     
     default: if (type & EXT_TYPE_UNUSED) {
       switch (type &~ EXT_TYPE_UNUSED) {
-        case IS_CV: ZVAL_STRINGL(*return_value_ptr, "IS_CV|EXT_TYPE_UNUSED", sizeof("IS_CV|EXT_TYPE_UNUSED"), 1); break;
-        case IS_TMP_VAR: ZVAL_STRINGL(*return_value_ptr, "IS_TMP_VAR|EXT_TYPE_UNUSED", sizeof("IS_TMP_VAR|EXT_TYPE_UNUSED"), 1); break;
-        case IS_VAR: ZVAL_STRINGL(*return_value_ptr, "IS_VAR|EXT_TYPE_UNUSED", sizeof("IS_VAR|EXT_TYPE_UNUSED"), 1); break;
-        case IS_CONST: ZVAL_STRINGL(*return_value_ptr, "IS_CONST|EXT_TYPE_UNUSED", sizeof("IS_CONST|EXT_TYPE_UNUSED"), 1); break;
-        case IS_UNUSED: ZVAL_STRINGL(*return_value_ptr, "IS_UNUSED|EXT_TYPE_UNUSED", sizeof("IS_UNUSED|EXT_TYPE_UNUSED"), 1); break;
+        case IS_CV: ZVAL_STRINGL(*return_value_ptr, "IS_CV|EXT_TYPE_UNUSED", strlen("IS_CV|EXT_TYPE_UNUSED"), 1); break;
+        case IS_TMP_VAR: ZVAL_STRINGL(*return_value_ptr, "IS_TMP_VAR|EXT_TYPE_UNUSED", strlen("IS_TMP_VAR|EXT_TYPE_UNUSED"), 1); break;
+        case IS_VAR: ZVAL_STRINGL(*return_value_ptr, "IS_VAR|EXT_TYPE_UNUSED", strlen("IS_VAR|EXT_TYPE_UNUSED"), 1); break;
+        case IS_CONST: ZVAL_STRINGL(*return_value_ptr, "IS_CONST|EXT_TYPE_UNUSED", strlen("IS_CONST|EXT_TYPE_UNUSED"), 1); break;
+        case IS_UNUSED: ZVAL_STRINGL(*return_value_ptr, "IS_UNUSED|EXT_TYPE_UNUSED", strlen("IS_UNUSED|EXT_TYPE_UNUSED"), 1); break;
       }
     } else {
-      ZVAL_STRINGL(*return_value_ptr, "unknown", sizeof("unknown"), 1); break; 
+      ZVAL_STRINGL(*return_value_ptr, "unknown", strlen("unknown"), 1); break; 
     }
   }
 } /* }}} */
