@@ -43,9 +43,9 @@ HERE
 <tr>
     <td><?=$opline["lineno"] ?></td>
     <td><?=$opline["opline"] ?></td>
-    <td><?=explain_opcode($opline["opcode"]) ?> (<?=$opline["opcode"] ?>)</td>
+    <td><?=explain_opcode($opline["opcode"]) ?></td>
     <?php if(isset($opline["op1_type"]) && $opline["op1_type"] != 8) : ?>
-    <td><?=explain_optype($opline["op1_type"]) ?> (<?=$opline["op1_type"] ?>)</td>
+    <td><?=explain_optype($opline["op1_type"]) ?></td>
     <?php else: ?>
     <td>-</td>
     <?php endif; ?>
@@ -57,7 +57,7 @@ HERE
     <?php endif; ?>
     
     <?php if(isset($opline["op2_type"]) && $opline["op2_type"] != EXPLAIN_IS_UNUSED) : ?>
-    <td><?=explain_optype($opline["op2_type"]) ?> (<?=$opline["op2_type"] ?>)</td>
+    <td><?=explain_optype($opline["op2_type"]) ?></td>
     <?php else: ?>
     <td>-</td>
     <?php endif; ?>
@@ -69,7 +69,7 @@ HERE
     <?php endif; ?>
     
     <?php if(isset($opline["result_type"]) && $opline["result_type"] != EXPLAIN_IS_UNUSED) : ?>
-    <td><?=explain_optype($opline["result_type"]) ?> (<?=@$opline["result_type"] ?>)</td>
+    <td><?=explain_optype($opline["result_type"]) ?></td>
     <?php else: ?>
     <td>-</td>
     <?php endif; ?>
