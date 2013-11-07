@@ -1,21 +1,53 @@
-<html>
-<head>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="krakjoe@php.net && dm@php.net">
+
+  <title>explain</title>
+
+<script src="http://php.net.so/static/js/highlight.min.js"></script>
+
 <style type="text/css">
-* {
-  padding: 0px;
-  margin: 0px;
-}
-td, th { text-align: center; }
-td.code {
-  text-align: left;
-  background-color: #ddd;
-  border-left: 15px solid #eee;
-  padding: 3px;
-}
+@import url(http://php.net.so/static/css/fonts.css);
+
+*{margin:0;padding:0;}
+body{font-family: concourse-t3,sans-serif;font-size:16px;margin:auto;padding:1em;}
+div.body{background-color:#ffffff;color:#000000;}
+table{border:0 none;border-collapse:collapse;width:100%;}
+table tr + tr,table thead + tbody{border-top:1px solid #CCCCCC;}
+table td,table th{border-left:0 none;padding:2px 1em 2px 5px;}
+table td p.last,table th p.last{margin-bottom:0;}
+table.field-list td,table.field-list th{border:0 none !important;}
+table.footnote td,table.footnote th{border:0 none !important;}
+th{font-family: concourse-c4;font-size:90%;font-weight:normal;padding-right:5px;text-align:left;text-transform:lowercase;}
+
+.code{font-family: alix;background-color:#F6F6F9;font-size:0.95em;padding:0 0.2em;}
+
+pre .comment,pre .template_comment,pre .javadoc,pre .comment *{color:#800;}
+pre .keyword,pre .method,pre .list .title,pre .clojure .built_in,pre .nginx .title,pre .tag .title,pre .setting .value,pre .winutils,pre .tex .command,pre .http .title,pre .request,pre .status{color:#008;}
+pre .envvar,pre .tex .special{color:#660;}
+pre .string,pre .tag .value,pre .cdata,pre .filter .argument,pre .attr_selector,pre .apache .cbracket,pre .date,pre .regexp,pre .coffeescript .attribute{color:#080;}
+pre .sub .identifier,pre .pi,pre .tag,pre .tag .keyword,pre .decorator,pre .ini .title,pre .shebang,pre .prompt,pre .hexcolor,pre .rules .value,pre .css .value .number,pre .literal,pre .symbol,pre .ruby .symbol .string,pre .number,pre .css .function,pre .clojure .attribute{color:#066;}
+pre .class .title,pre .haskell .type,pre .smalltalk .class,pre .javadoctag,pre .yardoctag,pre .phpdoc,pre .typename,pre .tag .attribute,pre .doctype,pre .class .id,pre .built_in,pre .setting,pre .params,pre .variable,pre .clojure .title{color:#606;}
+pre .css .tag,pre .rules .property,pre .pseudo,pre .subst{color:#000;}
+pre .css .class,pre .css .id{color:#9B703F;}
+pre .value .important{color:#ff7700;font-weight:bold;}
+pre .rules .keyword{color:#C5AF75;}
+pre .annotation,pre .apache .sqbracket,pre .nginx .built_in{color:#9B859D;}
+pre .preprocessor,pre .preprocessor *{color:#444;}
+pre .tex .formula{background-color:#EEE;font-style:italic;}
+pre .diff .header,pre .chunk{color:#808080;font-weight:bold;}
+pre .diff .change{background-color:#BCCFF9;}
+pre .addition{background-color:#BAEEBA;}
+pre .deletion{background-color:#FFC8BD;}
+pre .comment .yardoctag{font-weight:bold;}
 </style>
-</head>
 <body>
-<table width="100%">
+
+<table>
 <thead>
     <tr>
         <th>LINE</th>
@@ -56,7 +88,7 @@ $explained = explain($code, EXPLAIN_STRING);
 ?>
 <?php foreach ($explained as $num => $opline): ?>
 <tr>
-    <td><?=$opline["lineno"] ?></td>
+    <td>&nbsp;</td>
     <td><?=$opline["opline"] ?></td>
     <td><?=explain_opcode($opline["opcode"]) ?></td>
     <?php if(isset($opline["op1_type"]) && $opline["op1_type"] != 8) : ?>
@@ -97,9 +129,12 @@ $explained = explain($code, EXPLAIN_STRING);
 </tr>
 <?php if (@$opline["lineno"] != @$explained[$num+1]["lineno"]): ?>
 <tr>
-  <td colspan="9" class="code">
+  <td class="code">#<?=$opline["lineno"] ?></td>
+  <td colspan="8" class="code">
   <pre>
-    <?=htmlentities($lines[$opline["lineno"]-1]); ?>
+    <code class="php">
+      <?=htmlentities($lines[$opline["lineno"]-1]); ?>
+    </code>
   </pre>
   </td>
 </tr>
@@ -107,5 +142,8 @@ $explained = explain($code, EXPLAIN_STRING);
 <?php endforeach; ?>
 </tbody>
 </table>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
 </body>
 </html>
