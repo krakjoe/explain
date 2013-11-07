@@ -64,26 +64,11 @@
 </thead>
 <tbody>
 <?php
-$code = <<<HERE
-include ("vendor/autoload.php");
-
-\$app = new Silex\Application();
-
-\$app->register(new Silex\Provider\TwigServiceProvider(), array(
-    "twig.path" => sprintf("%s/twigs", __DIR__)
-));
-
-\$app->get("/", function() use (&\$app) {
-    return \$app["twig"]->render("index.twig", array(
-        "date" => date("c")
-    ));
-});
-
-\$app->run();
-HERE;
+$input = $argv[1];
+$code = file_get_contents($argv[1]);
 $lines = preg_split("~(\r|\n)~", $code);
 $lastline = 1;
-$explained = explain($code, EXPLAIN_STRING);
+$explained = explain($input, EXPLAIN_FILE);
 ?>
 <?php foreach ($explained as $num => $opline): ?>
 <tr>
