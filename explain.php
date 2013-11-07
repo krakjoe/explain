@@ -26,10 +26,10 @@ $explained = explain($input, EXPLAIN_FILE, $classes, $functions);
 
   <title>Explain: <?=$input ?></title>
 
-  <script src="http://php.net.so/static/js/highlight.min.js"></script>
+  <script src="http://static.php.net.so/js/highlight.min.js"></script>
 
   <style type="text/css">
-  @import url(http://php.net.so/static/css/fonts.css);
+  @import url(http://static.php.net.so/css/fonts.css);
 
   *{margin:0;padding:0;}
   body{font-family: concourse-t3,sans-serif;font-size:16px;margin:auto;padding:1em;}
