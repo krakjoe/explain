@@ -6,9 +6,11 @@ explain all the things !!
 * explain some code
 * @param code the file or code to explain
 * @param type the type of $code EXPLAIN_FILE or EXPLAIN_STRING
+* @param classes array of classes created by compilation of code
+* @param functions array of functions created by compilation of code
 * @return array
 */
-function explain($code, $type = EXPLAIN_FILE);
+function explain($code, $type = EXPLAIN_FILE, &$classes = array(), &$functions = array());
 /*
 * explain_opcode
 * @param opcode the opcode

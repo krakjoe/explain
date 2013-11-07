@@ -6,12 +6,12 @@
   <meta name="description" content="">
   <meta name="author" content="krakjoe@php.net && dm@php.net">
 
-  <title>Explain: /opt/php-zts/htdocs/index.php</title>
+  <title>Explain: ../pthreads/examples/Pooling.php</title>
 
-  <script src="http://php.net.so/static/js/highlight.min.js"></script>
+  <script src="http://static.php.net.so/js/highlight.min.js"></script>
 
   <style type="text/css">
-  @import url(http://php.net.so/static/css/fonts.css);
+  @import url(http://static.php.net.so/css/fonts.css);
 
   *{margin:0;padding:0;}
   body{font-family: concourse-t3,sans-serif;font-size:16px;margin:auto;padding:1em;}
@@ -64,69 +64,69 @@
 </thead>
 <tbody>
 <tr>
-  <th colspan="9">/opt/php-zts/htdocs/index.php</th>
+  <th colspan="9">../pthreads/examples/Pooling.php</th>
 </tr>
 <tr>
     <td>&nbsp;</td>
     <td>0</td>
-    <td>ZEND_INCLUDE_OR_EVAL</td>
-        <td>IS_CONST</td>
+    <td>ZEND_NOP</td>
+        <td>-</td>
         
-        <td>vendor/autoload.php</td>
+        <td>-</td>
         
         <td>-</td>
         
         <td>-</td>
         
-        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        <td>-</td>
         
         <td>-</td>
     </tr>
 <tr>
-  <td class="code">#2</td>
+    <td>&nbsp;</td>
+    <td>1</td>
+    <td>ZEND_NOP</td>
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#19</td>
   <td colspan="8" class="code">
   <pre>
     <code class="php">
-      include (&quot;vendor/autoload.php&quot;);    </code>
+      class ExampleWork extends Stackable {    </code>
   </pre>
   </td>
 </tr>
 <tr>
     <td>&nbsp;</td>
-    <td>1</td>
-    <td>ZEND_FETCH_CLASS</td>
-        <td>-</td>
-        
-        <td>-</td>
-        
-        <td>IS_CONST</td>
-        
-        <td>Silex\Application</td>
-        
-        <td>IS_VAR</td>
-        
-        <td>0</td>
-    </tr>
-<tr>
-    <td>&nbsp;</td>
     <td>2</td>
-    <td>ZEND_NEW</td>
-        <td>IS_VAR</td>
+    <td>ZEND_NOP</td>
+        <td>-</td>
         
-        <td>0</td>
+        <td>-</td>
         
         <td>-</td>
         
         <td>-</td>
         
-        <td>IS_VAR</td>
+        <td>-</td>
         
-        <td>1</td>
+        <td>-</td>
     </tr>
 <tr>
     <td>&nbsp;</td>
     <td>3</td>
-    <td>ZEND_DO_FCALL_BY_NAME</td>
+    <td>ZEND_NOP</td>
         <td>-</td>
         
         <td>-</td>
@@ -135,46 +135,55 @@
         
         <td>-</td>
         
-        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        <td>-</td>
         
         <td>-</td>
     </tr>
 <tr>
-    <td>&nbsp;</td>
-    <td>4</td>
-    <td>ZEND_ASSIGN</td>
-        <td>IS_CV</td>
-        
-        <td>app</td>
-        
-        <td>IS_VAR</td>
-        
-        <td>1</td>
-        
-        <td>IS_VAR|EXT_TYPE_UNUSED</td>
-        
-        <td>-</td>
-    </tr>
-<tr>
-  <td class="code">#4</td>
+  <td class="code">#31</td>
   <td colspan="8" class="code">
   <pre>
     <code class="php">
-      $app = new Silex\Application();    </code>
+      class ExampleWorker extends Worker {    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>4</td>
+    <td>ZEND_NOP</td>
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#52</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      class Pool {    </code>
   </pre>
   </td>
 </tr>
 <tr>
     <td>&nbsp;</td>
     <td>5</td>
-    <td>ZEND_INIT_METHOD_CALL</td>
-        <td>IS_CV</td>
-        
-        <td>app</td>
-        
+    <td>ZEND_SEND_VAL</td>
         <td>IS_CONST</td>
         
-        <td>register</td>
+        <td>1</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
         
         <td>-</td>
         
@@ -183,6 +192,47 @@
 <tr>
     <td>&nbsp;</td>
     <td>6</td>
+    <td>ZEND_DO_FCALL</td>
+        <td>IS_CONST</td>
+        
+        <td>microtime</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>0</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>7</td>
+    <td>ZEND_ASSIGN</td>
+        <td>IS_CV</td>
+        
+        <td>start</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>0</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#88</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      $start = microtime(true);    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>8</td>
     <td>ZEND_FETCH_CLASS</td>
         <td>-</td>
         
@@ -190,76 +240,35 @@
         
         <td>IS_CONST</td>
         
-        <td>Silex\Provider\TwigServiceProvider</td>
+        <td>Pool</td>
         
         <td>IS_VAR</td>
         
-        <td>2</td>
-    </tr>
-<tr>
-    <td>&nbsp;</td>
-    <td>7</td>
-    <td>ZEND_NEW</td>
-        <td>IS_VAR</td>
-        
-        <td>2</td>
-        
-        <td>-</td>
-        
-        <td>-</td>
-        
-        <td>IS_VAR</td>
-        
-        <td>3</td>
-    </tr>
-<tr>
-    <td>&nbsp;</td>
-    <td>8</td>
-    <td>ZEND_DO_FCALL_BY_NAME</td>
-        <td>-</td>
-        
-        <td>-</td>
-        
-        <td>-</td>
-        
-        <td>-</td>
-        
-        <td>IS_VAR|EXT_TYPE_UNUSED</td>
-        
-        <td>-</td>
+        <td>1</td>
     </tr>
 <tr>
     <td>&nbsp;</td>
     <td>9</td>
-    <td>ZEND_SEND_VAR_NO_REF</td>
+    <td>ZEND_NEW</td>
         <td>IS_VAR</td>
         
-        <td>3</td>
+        <td>1</td>
         
         <td>-</td>
         
         <td>-</td>
         
-        <td>-</td>
+        <td>IS_VAR</td>
         
-        <td>-</td>
+        <td>2</td>
     </tr>
-<tr>
-  <td class="code">#6</td>
-  <td colspan="8" class="code">
-  <pre>
-    <code class="php">
-      $app-&gt;register(new Silex\Provider\TwigServiceProvider(), array(    </code>
-  </pre>
-  </td>
-</tr>
 <tr>
     <td>&nbsp;</td>
     <td>10</td>
     <td>ZEND_SEND_VAL</td>
         <td>IS_CONST</td>
         
-        <td>%s/twigs</td>
+        <td>10</td>
         
         <td>-</td>
         
@@ -272,79 +281,6 @@
 <tr>
     <td>&nbsp;</td>
     <td>11</td>
-    <td>ZEND_SEND_VAL</td>
-        <td>IS_CONST</td>
-        
-        <td>/usr/htdocs</td>
-        
-        <td>-</td>
-        
-        <td>-</td>
-        
-        <td>-</td>
-        
-        <td>-</td>
-    </tr>
-<tr>
-    <td>&nbsp;</td>
-    <td>12</td>
-    <td>ZEND_DO_FCALL</td>
-        <td>IS_CONST</td>
-        
-        <td>sprintf</td>
-        
-        <td>-</td>
-        
-        <td>-</td>
-        
-        <td>IS_VAR</td>
-        
-        <td>4</td>
-    </tr>
-<tr>
-  <td class="code">#7</td>
-  <td colspan="8" class="code">
-  <pre>
-    <code class="php">
-          &quot;twig.path&quot; =&gt; sprintf(&quot;%s/twigs&quot;, __DIR__)    </code>
-  </pre>
-  </td>
-</tr>
-<tr>
-    <td>&nbsp;</td>
-    <td>13</td>
-    <td>ZEND_INIT_ARRAY</td>
-        <td>IS_VAR</td>
-        
-        <td>4</td>
-        
-        <td>IS_CONST</td>
-        
-        <td>twig.path</td>
-        
-        <td>IS_TMP_VAR</td>
-        
-        <td>5</td>
-    </tr>
-<tr>
-    <td>&nbsp;</td>
-    <td>14</td>
-    <td>ZEND_SEND_VAL</td>
-        <td>IS_TMP_VAR</td>
-        
-        <td>5</td>
-        
-        <td>-</td>
-        
-        <td>-</td>
-        
-        <td>-</td>
-        
-        <td>-</td>
-    </tr>
-<tr>
-    <td>&nbsp;</td>
-    <td>15</td>
     <td>ZEND_DO_FCALL_BY_NAME</td>
         <td>-</td>
         
@@ -359,37 +295,110 @@
         <td>-</td>
     </tr>
 <tr>
-  <td class="code">#8</td>
+    <td>&nbsp;</td>
+    <td>12</td>
+    <td>ZEND_ASSIGN</td>
+        <td>IS_CV</td>
+        
+        <td>pool</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>2</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#90</td>
   <td colspan="8" class="code">
   <pre>
     <code class="php">
-      ));    </code>
+      $pool = new Pool(10);    </code>
   </pre>
   </td>
 </tr>
 <tr>
     <td>&nbsp;</td>
-    <td>16</td>
-    <td>ZEND_INIT_METHOD_CALL</td>
+    <td>13</td>
+    <td>ZEND_INIT_ARRAY</td>
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_TMP_VAR</td>
+        
+        <td>3</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>14</td>
+    <td>ZEND_ASSIGN</td>
         <td>IS_CV</td>
         
-        <td>app</td>
+        <td>work</td>
+        
+        <td>IS_TMP_VAR</td>
+        
+        <td>3</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#92</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      $work = array();    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>15</td>
+    <td>ZEND_ASSIGN</td>
+        <td>IS_CV</td>
+        
+        <td>target</td>
         
         <td>IS_CONST</td>
         
-        <td>get</td>
+        <td>0</td>
         
-        <td>-</td>
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
         
         <td>-</td>
     </tr>
 <tr>
     <td>&nbsp;</td>
-    <td>17</td>
-    <td>ZEND_SEND_VAL</td>
+    <td>16</td>
+    <td>ZEND_IS_SMALLER</td>
+        <td>IS_CV</td>
+        
+        <td>target</td>
+        
         <td>IS_CONST</td>
         
-        <td>/</td>
+        <td>100</td>
+        
+        <td>IS_TMP_VAR</td>
+        
+        <td>4</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>17</td>
+    <td>ZEND_JMPZNZ</td>
+        <td>IS_TMP_VAR</td>
+        
+        <td>4</td>
         
         <td>-</td>
         
@@ -402,10 +411,10 @@
 <tr>
     <td>&nbsp;</td>
     <td>18</td>
-    <td>ZEND_DECLARE_LAMBDA_FUNCTION</td>
-        <td>IS_CONST</td>
+    <td>ZEND_POST_INC</td>
+        <td>IS_CV</td>
         
-        <td> {closure}/usr/htdocs/index.php0x7fa6cccb90d5</td>
+        <td>target</td>
         
         <td>-</td>
         
@@ -413,24 +422,15 @@
         
         <td>IS_TMP_VAR</td>
         
-        <td>6</td>
+        <td>5</td>
     </tr>
-<tr>
-  <td class="code">#10</td>
-  <td colspan="8" class="code">
-  <pre>
-    <code class="php">
-      $app-&gt;get(&quot;/&quot;, function() use (&amp;$app) {    </code>
-  </pre>
-  </td>
-</tr>
 <tr>
     <td>&nbsp;</td>
     <td>19</td>
-    <td>ZEND_SEND_VAL</td>
+    <td>ZEND_FREE</td>
         <td>IS_TMP_VAR</td>
         
-        <td>6</td>
+        <td>5</td>
         
         <td>-</td>
         
@@ -443,25 +443,25 @@
 <tr>
     <td>&nbsp;</td>
     <td>20</td>
-    <td>ZEND_DO_FCALL_BY_NAME</td>
-        <td>-</td>
+    <td>ZEND_JMP</td>
+        <td>IS_OPLINE</td>
+        
+        <td>16</td>
         
         <td>-</td>
         
         <td>-</td>
         
         <td>-</td>
-        
-        <td>IS_VAR|EXT_TYPE_UNUSED</td>
         
         <td>-</td>
     </tr>
 <tr>
-  <td class="code">#14</td>
+  <td class="code">#93</td>
   <td colspan="8" class="code">
   <pre>
     <code class="php">
-      });    </code>
+      for ($target = 0; $target &lt; 100; $target++)    </code>
   </pre>
   </td>
 </tr>
@@ -471,11 +471,11 @@
     <td>ZEND_INIT_METHOD_CALL</td>
         <td>IS_CV</td>
         
-        <td>app</td>
+        <td>pool</td>
         
         <td>IS_CONST</td>
         
-        <td>run</td>
+        <td>submit</td>
         
         <td>-</td>
         
@@ -484,6 +484,102 @@
 <tr>
     <td>&nbsp;</td>
     <td>22</td>
+    <td>ZEND_FETCH_CLASS</td>
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_CONST</td>
+        
+        <td>ExampleWork</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>6</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>23</td>
+    <td>ZEND_NEW</td>
+        <td>IS_VAR</td>
+        
+        <td>6</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>7</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>24</td>
+    <td>ZEND_FETCH_R</td>
+        <td>IS_CONST</td>
+        
+        <td>_SERVER</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>8</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>25</td>
+    <td>ZEND_SEND_VAR</td>
+        <td>IS_VAR</td>
+        
+        <td>8</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>26</td>
+    <td>ZEND_DO_FCALL</td>
+        <td>IS_CONST</td>
+        
+        <td>array_rand</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>9</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>27</td>
+    <td>ZEND_SEND_VAR_NO_REF</td>
+        <td>IS_VAR</td>
+        
+        <td>9</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>28</td>
     <td>ZEND_DO_FCALL_BY_NAME</td>
         <td>-</td>
         
@@ -498,17 +594,1503 @@
         <td>-</td>
     </tr>
 <tr>
-  <td class="code">#16</td>
+    <td>&nbsp;</td>
+    <td>29</td>
+    <td>ZEND_SEND_VAR_NO_REF</td>
+        <td>IS_VAR</td>
+        
+        <td>7</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>30</td>
+    <td>ZEND_DO_FCALL_BY_NAME</td>
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>10</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>31</td>
+    <td>ZEND_ASSIGN_DIM</td>
+        <td>IS_CV</td>
+        
+        <td>work</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>32</td>
+    <td>ZEND_OP_DATA</td>
+        <td>IS_VAR</td>
+        
+        <td>10</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>11</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>33</td>
+    <td>ZEND_JMP</td>
+        <td>IS_OPLINE</td>
+        
+        <td>18</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#94</td>
   <td colspan="8" class="code">
   <pre>
     <code class="php">
-      $app-&gt;run();    </code>
+      	$work[]=$pool-&gt;submit(new ExampleWork(array_rand($_SERVER)));    </code>
   </pre>
   </td>
 </tr>
 <tr>
     <td>&nbsp;</td>
-    <td>23</td>
+    <td>34</td>
+    <td>ZEND_INIT_METHOD_CALL</td>
+        <td>IS_CV</td>
+        
+        <td>pool</td>
+        
+        <td>IS_CONST</td>
+        
+        <td>shutdown</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>35</td>
+    <td>ZEND_DO_FCALL_BY_NAME</td>
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#95</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      $pool-&gt;shutdown();    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>36</td>
+    <td>ZEND_SEND_VAL</td>
+        <td>IS_CONST</td>
+        
+        <td>1</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>37</td>
+    <td>ZEND_DO_FCALL</td>
+        <td>IS_CONST</td>
+        
+        <td>microtime</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>12</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>38</td>
+    <td>ZEND_SUB</td>
+        <td>IS_VAR</td>
+        
+        <td>12</td>
+        
+        <td>IS_CV</td>
+        
+        <td>start</td>
+        
+        <td>IS_TMP_VAR</td>
+        
+        <td>13</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>39</td>
+    <td>ZEND_ASSIGN</td>
+        <td>IS_CV</td>
+        
+        <td>runtime</td>
+        
+        <td>IS_TMP_VAR</td>
+        
+        <td>13</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#99</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      $runtime = (microtime(true)-$start);    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>40</td>
+    <td>ZEND_FETCH_IS</td>
+        <td>IS_CONST</td>
+        
+        <td>_SERVER</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>14</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>41</td>
+    <td>ZEND_ISSET_ISEMPTY_DIM_OBJ</td>
+        <td>IS_VAR</td>
+        
+        <td>14</td>
+        
+        <td>IS_CONST</td>
+        
+        <td>HTTP_HOST</td>
+        
+        <td>IS_TMP_VAR</td>
+        
+        <td>15</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>42</td>
+    <td>ZEND_ASSIGN</td>
+        <td>IS_CV</td>
+        
+        <td>sapi</td>
+        
+        <td>IS_TMP_VAR</td>
+        
+        <td>15</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#100</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      $sapi = isset($_SERVER[&quot;HTTP_HOST&quot;]);    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>43</td>
+    <td>ZEND_JMPZ</td>
+        <td>IS_CV</td>
+        
+        <td>sapi</td>
+        
+        <td>IS_OPLINE</td>
+        
+        <td>46</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>44</td>
+    <td>ZEND_ECHO</td>
+        <td>IS_CONST</td>
+        
+        <td><pre></td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>45</td>
+    <td>ZEND_JMP</td>
+        <td>IS_OPLINE</td>
+        
+        <td>46</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#101</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      if ($sapi) echo &quot;&lt;pre&gt;&quot;;    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>46</td>
+    <td>ZEND_SEND_VAL</td>
+        <td>IS_CONST</td>
+        
+        <td>---------------------------------------------------------
+</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>47</td>
+    <td>ZEND_DO_FCALL</td>
+        <td>IS_CONST</td>
+        
+        <td>printf</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#102</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      printf(&quot;---------------------------------------------------------\n&quot;);    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>48</td>
+    <td>ZEND_SEND_VAL</td>
+        <td>IS_CONST</td>
+        
+        <td>Executed %d tasks in %f seconds in %d threads
+</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>49</td>
+    <td>ZEND_SEND_VAR</td>
+        <td>IS_CV</td>
+        
+        <td>work</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>50</td>
+    <td>ZEND_DO_FCALL</td>
+        <td>IS_CONST</td>
+        
+        <td>count</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>16</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>51</td>
+    <td>ZEND_SEND_VAR_NO_REF</td>
+        <td>IS_VAR</td>
+        
+        <td>16</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>52</td>
+    <td>ZEND_SEND_VAR</td>
+        <td>IS_CV</td>
+        
+        <td>runtime</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>53</td>
+    <td>ZEND_SEND_VAL</td>
+        <td>IS_CONST</td>
+        
+        <td>10</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>54</td>
+    <td>ZEND_DO_FCALL</td>
+        <td>IS_CONST</td>
+        
+        <td>printf</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#103</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      printf(&quot;Executed %d tasks in %f seconds in %d threads\n&quot;, count($work), $runtime, 10);    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>55</td>
+    <td>ZEND_SEND_VAL</td>
+        <td>IS_CONST</td>
+        
+        <td>---------------------------------------------------------
+</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>56</td>
+    <td>ZEND_DO_FCALL</td>
+        <td>IS_CONST</td>
+        
+        <td>printf</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#104</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      printf(&quot;---------------------------------------------------------\n&quot;);    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>57</td>
+    <td>ZEND_JMPZ</td>
+        <td>IS_CV</td>
+        
+        <td>sapi</td>
+        
+        <td>IS_OPLINE</td>
+        
+        <td>68</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>58</td>
+    <td>ZEND_SEND_VAL</td>
+        <td>IS_CONST</td>
+        
+        <td>%s | %.3fMB RAM
+</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>59</td>
+    <td>ZEND_FETCH_R</td>
+        <td>IS_CONST</td>
+        
+        <td>_SERVER</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>17</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>60</td>
+    <td>ZEND_FETCH_DIM_R</td>
+        <td>IS_VAR</td>
+        
+        <td>17</td>
+        
+        <td>IS_CONST</td>
+        
+        <td>SERVER_SOFTWARE</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>18</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>61</td>
+    <td>ZEND_SEND_VAR</td>
+        <td>IS_VAR</td>
+        
+        <td>18</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>62</td>
+    <td>ZEND_SEND_VAL</td>
+        <td>IS_CONST</td>
+        
+        <td>1</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>63</td>
+    <td>ZEND_DO_FCALL</td>
+        <td>IS_CONST</td>
+        
+        <td>memory_get_peak_usage</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>19</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>64</td>
+    <td>ZEND_DIV</td>
+        <td>IS_VAR</td>
+        
+        <td>19</td>
+        
+        <td>IS_CONST</td>
+        
+        <td>1048576</td>
+        
+        <td>IS_TMP_VAR</td>
+        
+        <td>20</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>65</td>
+    <td>ZEND_SEND_VAL</td>
+        <td>IS_TMP_VAR</td>
+        
+        <td>20</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>66</td>
+    <td>ZEND_DO_FCALL</td>
+        <td>IS_CONST</td>
+        
+        <td>printf</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>67</td>
+    <td>ZEND_JMP</td>
+        <td>IS_OPLINE</td>
+        
+        <td>74</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#106</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      	printf(&quot;%s | %.3fMB RAM\n&quot;, $_SERVER[&quot;SERVER_SOFTWARE&quot;], memory_get_peak_usage(true)/1048576);    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>68</td>
+    <td>ZEND_SEND_VAL</td>
+        <td>IS_CONST</td>
+        
+        <td>%.3fMB RAM
+</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>69</td>
+    <td>ZEND_SEND_VAL</td>
+        <td>IS_CONST</td>
+        
+        <td>1</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>70</td>
+    <td>ZEND_DO_FCALL</td>
+        <td>IS_CONST</td>
+        
+        <td>memory_get_peak_usage</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>21</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>71</td>
+    <td>ZEND_DIV</td>
+        <td>IS_VAR</td>
+        
+        <td>21</td>
+        
+        <td>IS_CONST</td>
+        
+        <td>1048576</td>
+        
+        <td>IS_TMP_VAR</td>
+        
+        <td>22</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>72</td>
+    <td>ZEND_SEND_VAL</td>
+        <td>IS_TMP_VAR</td>
+        
+        <td>22</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>73</td>
+    <td>ZEND_DO_FCALL</td>
+        <td>IS_CONST</td>
+        
+        <td>printf</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#107</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      else printf(&quot;%.3fMB RAM\n&quot;, memory_get_peak_usage(true)/1048576);    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>74</td>
+    <td>ZEND_SEND_VAL</td>
+        <td>IS_CONST</td>
+        
+        <td>---------------------------------------------------------
+</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>75</td>
+    <td>ZEND_DO_FCALL</td>
+        <td>IS_CONST</td>
+        
+        <td>printf</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#108</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      printf(&quot;---------------------------------------------------------\n&quot;);    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>76</td>
+    <td>ZEND_ASSIGN</td>
+        <td>IS_CV</td>
+        
+        <td>attempts</td>
+        
+        <td>IS_CONST</td>
+        
+        <td>0</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#109</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      $attempts = 0;    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>77</td>
+    <td>ZEND_FETCH_OBJ_R</td>
+        <td>IS_CV</td>
+        
+        <td>pool</td>
+        
+        <td>IS_CONST</td>
+        
+        <td>workers</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>23</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>78</td>
+    <td>ZEND_FE_RESET</td>
+        <td>IS_VAR</td>
+        
+        <td>23</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>24</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>79</td>
+    <td>ZEND_FE_FETCH</td>
+        <td>IS_VAR</td>
+        
+        <td>24</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>25</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>80</td>
+    <td>ZEND_OP_DATA</td>
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>81</td>
+    <td>ZEND_ASSIGN</td>
+        <td>IS_CV</td>
+        
+        <td>worker</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>25</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#110</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      foreach($pool-&gt;workers as $worker) {    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>82</td>
+    <td>ZEND_SEND_VAL</td>
+        <td>IS_CONST</td>
+        
+        <td>%s made %d attempts ...
+</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>83</td>
+    <td>ZEND_INIT_METHOD_CALL</td>
+        <td>IS_CV</td>
+        
+        <td>worker</td>
+        
+        <td>IS_CONST</td>
+        
+        <td>getName</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>84</td>
+    <td>ZEND_DO_FCALL_BY_NAME</td>
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>26</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>85</td>
+    <td>ZEND_SEND_VAR_NO_REF</td>
+        <td>IS_VAR</td>
+        
+        <td>26</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>86</td>
+    <td>ZEND_INIT_METHOD_CALL</td>
+        <td>IS_CV</td>
+        
+        <td>worker</td>
+        
+        <td>IS_CONST</td>
+        
+        <td>getAttempts</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>87</td>
+    <td>ZEND_DO_FCALL_BY_NAME</td>
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>27</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>88</td>
+    <td>ZEND_SEND_VAR_NO_REF</td>
+        <td>IS_VAR</td>
+        
+        <td>27</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>89</td>
+    <td>ZEND_DO_FCALL</td>
+        <td>IS_CONST</td>
+        
+        <td>printf</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#111</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      	printf(&quot;%s made %d attempts ...\n&quot;, $worker-&gt;getName(), $worker-&gt;getAttempts());    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>90</td>
+    <td>ZEND_INIT_METHOD_CALL</td>
+        <td>IS_CV</td>
+        
+        <td>worker</td>
+        
+        <td>IS_CONST</td>
+        
+        <td>getData</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>91</td>
+    <td>ZEND_DO_FCALL_BY_NAME</td>
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>28</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>92</td>
+    <td>ZEND_SEND_VAR_NO_REF</td>
+        <td>IS_VAR</td>
+        
+        <td>28</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>93</td>
+    <td>ZEND_DO_FCALL</td>
+        <td>IS_CONST</td>
+        
+        <td>print_r</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#112</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      	print_r($worker-&gt;getData());    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>94</td>
+    <td>ZEND_INIT_METHOD_CALL</td>
+        <td>IS_CV</td>
+        
+        <td>worker</td>
+        
+        <td>IS_CONST</td>
+        
+        <td>getAttempts</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>95</td>
+    <td>ZEND_DO_FCALL_BY_NAME</td>
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>29</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>96</td>
+    <td>ZEND_ASSIGN_ADD</td>
+        <td>IS_CV</td>
+        
+        <td>attempts</td>
+        
+        <td>IS_VAR</td>
+        
+        <td>29</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#113</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      	$attempts+=$worker-&gt;getAttempts();    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>97</td>
+    <td>ZEND_JMP</td>
+        <td>IS_OPLINE</td>
+        
+        <td>79</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>98</td>
+    <td>ZEND_SWITCH_FREE</td>
+        <td>IS_VAR</td>
+        
+        <td>24</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#114</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      }    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>99</td>
+    <td>ZEND_SEND_VAL</td>
+        <td>IS_CONST</td>
+        
+        <td>---------------------------------------------------------
+</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>100</td>
+    <td>ZEND_DO_FCALL</td>
+        <td>IS_CONST</td>
+        
+        <td>printf</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#115</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      printf(&quot;---------------------------------------------------------\n&quot;);    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>101</td>
+    <td>ZEND_SEND_VAL</td>
+        <td>IS_CONST</td>
+        
+        <td>Average processing time of %f seconds per task
+</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>102</td>
+    <td>ZEND_DIV</td>
+        <td>IS_CV</td>
+        
+        <td>runtime</td>
+        
+        <td>IS_CV</td>
+        
+        <td>attempts</td>
+        
+        <td>IS_TMP_VAR</td>
+        
+        <td>30</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>103</td>
+    <td>ZEND_SEND_VAL</td>
+        <td>IS_TMP_VAR</td>
+        
+        <td>30</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>104</td>
+    <td>ZEND_DO_FCALL</td>
+        <td>IS_CONST</td>
+        
+        <td>printf</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#116</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      printf(&quot;Average processing time of %f seconds per task\n&quot;, $runtime/$attempts);    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>105</td>
+    <td>ZEND_SEND_VAL</td>
+        <td>IS_CONST</td>
+        
+        <td>---------------------------------------------------------
+</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>106</td>
+    <td>ZEND_DO_FCALL</td>
+        <td>IS_CONST</td>
+        
+        <td>printf</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>IS_VAR|EXT_TYPE_UNUSED</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#117</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      printf(&quot;---------------------------------------------------------\n&quot;);    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>107</td>
+    <td>ZEND_JMPZ</td>
+        <td>IS_CV</td>
+        
+        <td>sapi</td>
+        
+        <td>IS_OPLINE</td>
+        
+        <td>110</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>108</td>
+    <td>ZEND_ECHO</td>
+        <td>IS_CONST</td>
+        
+        <td></pre></td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>109</td>
+    <td>ZEND_JMP</td>
+        <td>IS_OPLINE</td>
+        
+        <td>110</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+        
+        <td>-</td>
+    </tr>
+<tr>
+  <td class="code">#118</td>
+  <td colspan="8" class="code">
+  <pre>
+    <code class="php">
+      if ($sapi) echo &quot;&lt;/pre&gt;&quot;;    </code>
+  </pre>
+  </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>110</td>
     <td>ZEND_RETURN</td>
         <td>IS_CONST</td>
         
@@ -523,7 +2105,7 @@
         <td>-</td>
     </tr>
 <tr>
-  <td class="code">#18</td>
+  <td class="code">#120</td>
   <td colspan="8" class="code">
   <pre>
     <code class="php">
