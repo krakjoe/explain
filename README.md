@@ -23,15 +23,20 @@ function explain_opcode($opcode);
 function explain_optype($optype);
 ```
 
-<img src="https://raw.github.com/krakjoe/explain/master/explain.png" alt="screenshot"/>
-
-[![Build Status](https://travis-ci.org/krakjoe/explain.png?branch=master)](https://travis-ci.org/krakjoe/explain)
-
-See *explain.php* for helpingz ... 
-
 Execution
 =========
 
 ```
 php explain.php /path/to/file.php > output.html
 ```
+
+Executing the above command will output the same format as in the preview displayed here ...
+
+Preview
+=======
+
+<img src="https://raw.github.com/krakjoe/explain/master/explain.png" alt="screenshot"/>
+
+[![Build Status](https://travis-ci.org/krakjoe/explain.png?branch=master)](https://travis-ci.org/krakjoe/explain)
+
+See *explain.php* for helpingz ... 
