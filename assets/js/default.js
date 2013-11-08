@@ -1,6 +1,8 @@
 $(function(){
-  var main = $("#table-main");
-  var selected = main;
+  var main = $("table")[0];
+  var selected = $(main);
+  
+  $(main).fadeIn();
   
   $("#tree").jstree({
     "plugins": [

@@ -23,9 +23,9 @@ function scanpath($path) {
   return $files;
 }
 
-function table($id, &$explained, &$lines, &$first) {
+function table($id, &$explained, &$lines) {
   ?>
-        <table id="<?=sprintf("table-%s", md5($id)) ?>" style="<?=($first) ? "" : "display:none;" ?>">
+        <table id="<?=sprintf("table-%s", md5($id)) ?>" style="display:none;">
     <thead>
         <tr>
             <th>LINE</th>
@@ -169,25 +169,20 @@ if (is_dir($input)) {
   <div id="right">
   <?php
   if ($explained) {
-    $first = true;
-    
     foreach ($explained as $file => $explanation) {
-      table($file, $explanation, $lines[$file], $first);
-      
-      if ($first)
-        $first = false;
-      
+      table($file, $explanation, $lines[$file]);
+
       if ($classes[$file]): 
          foreach ($classes[$file] as $class => $methods): 
            foreach ($methods as $method => $opcodes):
-             table("{$file}-{$class}-{$method}", $opcodes, $lines[$file], $first);
+             table("{$file}-{$class}-{$method}", $opcodes, $lines[$file]);
            endforeach;
          endforeach;
       endif;
       
       if ($functions[$file]):
         foreach ($functions[$file] as $function => $opcodes):
-          table("{$file}-{$function}", $opcodes, $lines[$file], $first);
+          table("{$file}-{$function}", $opcodes, $lines[$file]);
         endforeach;
       endif;
     }

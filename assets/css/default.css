@@ -59,4 +59,6 @@ div#right {
 div#left {
   float: left;
   width: 15%;
+  overflow-x: scroll;
+  height:100%;
 }
