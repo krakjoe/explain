@@ -24,6 +24,7 @@
 
 #include "php.h"
 #include "php_ini.h"
+#include "php_main.h"
 #include "ext/standard/info.h"
 #include "php_explain.h"
 
@@ -290,7 +291,7 @@ static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint t
   }
 } /* }}} */
 
-static inline const char * explain_optype(zend_uint type, zval **return_value_ptr TSRMLS_DC) { /* {{{ */
+static inline void explain_optype(zend_uint type, zval **return_value_ptr TSRMLS_DC) { /* {{{ */
   switch (type) {
     case IS_CV: ZVAL_STRINGL(*return_value_ptr, "IS_CV", strlen("IS_CV"), 1); break;
     case IS_TMP_VAR: ZVAL_STRINGL(*return_value_ptr, "IS_TMP_VAR", strlen("IS_TMP_VAR"), 1); break;
@@ -309,7 +310,7 @@ static inline const char * explain_optype(zend_uint type, zval **return_value_pt
         case IS_UNUSED: ZVAL_STRINGL(*return_value_ptr, "IS_UNUSED|EXT_TYPE_UNUSED", strlen("IS_UNUSED|EXT_TYPE_UNUSED"), 1); break;
       }
     } else {
-      ZVAL_STRINGL(*return_value_ptr, "unknown", strlen("unknown"), 1); break; 
+      ZVAL_STRINGL(*return_value_ptr, "unknown", strlen("unknown"), 1);
     }
   }
 } /* }}} */
@@ -459,7 +460,7 @@ PHP_FUNCTION(explain)
       explain_create_caches(&caches[0], &caches[1] TSRMLS_CC);
       ops = zend_compile_string(code, "explained" TSRMLS_CC);
     } else {
-      zend_error(E_WARNING, "invalid options passed to explain (%d), please see documentation", options);
+      zend_error(E_WARNING, "invalid options passed to explain (%lu), please see documentation", options);
     }
 
     array_init(return_value);
@@ -612,6 +613,8 @@ static PHP_MINIT_FUNCTION(explain) {
   REGISTER_LONG_CONSTANT("EXPLAIN_IS_TMP_VAR",      IS_TMP_VAR,          CONST_CS | CONST_PERSISTENT);
   REGISTER_LONG_CONSTANT("EXPLAIN_IS_CV",           IS_CV,               CONST_CS | CONST_PERSISTENT);
   REGISTER_LONG_CONSTANT("EXPLAIN_EXT_TYPE_UNUSED", EXT_TYPE_UNUSED,     CONST_CS | CONST_PERSISTENT);
+
+  return SUCCESS;
 } /* }}} */
 
 /* {{{ explain_module_entry
