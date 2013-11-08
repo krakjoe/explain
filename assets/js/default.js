@@ -13,9 +13,10 @@ $(function(){
     if (data.rslt.obj.attr("id")) {
       var select = $("#table-"+data.rslt.obj.attr("id"));
       if (select) {
-        selected.fadeOut(666, function(){
-          select.fadeIn();
-          selected = select;
+        selected.fadeOut(333, function(){
+          select.fadeIn(333, function(){
+            selected = select;
+          });
         });
       }
     }
