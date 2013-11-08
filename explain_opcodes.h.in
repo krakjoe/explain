@@ -15,6 +15,6 @@
   | Author: Joe Watkins <joe.watkins@live.co.uk>                         |
   +----------------------------------------------------------------------+
 */
-explain_opcode_t opcodes[]= {
+static explain_opcode_t opcodes[]= {
 {opcodes}
 };

@@ -15,7 +15,7 @@
   | Author: Joe Watkins <joe.watkins@live.co.uk>                         |
   +----------------------------------------------------------------------+
 */
-explain_opcode_t opcodes[]= {
+static explain_opcode_t opcodes[]= {
 	EXPLAIN_OPCODE_NAME(ZEND_NOP),
 	EXPLAIN_OPCODE_NAME(ZEND_ADD),
 	EXPLAIN_OPCODE_NAME(ZEND_SUB),
