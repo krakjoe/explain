@@ -1,12 +1,14 @@
 <?php
 $input = @$argv[1];
 $lastline = 1;
+$classes = array();
+$functions = array();
 
-if ($input && ($code = file_get_contents($argv[1]))) {
+if ($input && ($code = @file_get_contents($input))) {
   $lines = preg_split("~(\n)~", $code);  
   $explained = explain(
     $input, EXPLAIN_FILE, $classes, $functions);
-}
+} else $explained = false;
 
 function table($id, $explained, $lines) {
   ?>
