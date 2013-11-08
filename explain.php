@@ -96,14 +96,13 @@ function table($id, $explained, $lines) {
     </table>
   <?php
 }
-/* TODO(dm) in $classes and $functions are op arrays for everything in userland */
 ?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="">
+  <meta name="description" content="explain: <?=$input ?>">
   <meta name="author" content="krakjoe@php.net && dm@php.net">
 
   <title>Explain: <?=$input ?></title>

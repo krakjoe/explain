@@ -449,6 +449,9 @@ PHP_FUNCTION(explain)
           explain_create_caches(&caches[0], &caches[1] TSRMLS_CC);
           ops = zend_compile_file(
             &fh, ZEND_INCLUDE TSRMLS_CC);
+          if (!ops) {
+            explain_destroy_caches(&caches[0], &caches[1] TSRMLS_CC);
+          }
           zend_destroy_file_handle(&fh TSRMLS_CC);
         } else {
           zend_file_handle_dtor(&fh TSRMLS_CC);
@@ -459,6 +462,9 @@ PHP_FUNCTION(explain)
     } else if (options & EXPLAIN_STRING) {
       explain_create_caches(&caches[0], &caches[1] TSRMLS_CC);
       ops = zend_compile_string(code, "explained" TSRMLS_CC);
+      if (!ops) {
+        explain_destroy_caches(&caches[0], &caches[1] TSRMLS_CC);
+      }
     } else {
       zend_error(E_WARNING, "invalid options passed to explain (%lu), please see documentation", options);
     }
