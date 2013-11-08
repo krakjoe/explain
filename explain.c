@@ -336,7 +336,7 @@ static inline void explain_op_array(zend_op_array *ops, zval *return_value TSRML
           zopline, "opline", sizeof("opline"), next);
         add_assoc_long_ex(
           zopline, "opcode", sizeof("opcode"), opline->opcode);
-        
+          
         switch (opline->opcode) {
           case ZEND_JMP:
 #ifdef ZEND_GOTO
@@ -407,6 +407,21 @@ static inline void explain_op_array(zend_op_array *ops, zval *return_value TSRML
   }
 }
 
+static inline void explain_create_caches(HashTable *classes, HashTable *functions TSRMLS_DC) { /* {{{ */
+  zend_function tf;
+  zend_class_entry *te;
+  
+  zend_hash_init(classes, zend_hash_num_elements(CG(class_table)), NULL, NULL, 0);
+  zend_hash_copy(classes, CG(class_table), NULL, &te, sizeof(zend_class_entry*));
+  zend_hash_init(functions, zend_hash_num_elements(CG(function_table)), NULL, NULL, 0);
+  zend_hash_copy(functions, CG(function_table), NULL, &tf, sizeof(zend_function));
+} /* }}} */
+
+static inline void explain_destroy_caches(HashTable *classes, HashTable *functions TSRMLS_DC) { /* {{{ */
+  zend_hash_destroy(classes);
+  zend_hash_destroy(functions);
+} /* }}} */
+
 /* {{{ proto array explain(string code [, long options, array &classes, array &functions])
    explain some code */
 PHP_FUNCTION(explain)
@@ -415,7 +430,8 @@ PHP_FUNCTION(explain)
        *classes = NULL, 
        *functions = NULL;
   zend_ulong options = EXPLAIN_FILE;
-
+  HashTable caches[2] = {0, 0};
+  
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z|lzz", &code, &options, &classes, &functions) == FAILURE) {
     return;
   }
@@ -429,6 +445,7 @@ PHP_FUNCTION(explain)
         int dummy = 1;
 
         if (zend_hash_add(&EG(included_files), fh.opened_path, strlen(fh.opened_path)+1, (void**) &dummy, sizeof(int), NULL) == SUCCESS) {
+          explain_create_caches(&caches[0], &caches[1] TSRMLS_CC);
           ops = zend_compile_file(
             &fh, ZEND_INCLUDE TSRMLS_CC);
           zend_destroy_file_handle(&fh TSRMLS_CC);
@@ -439,6 +456,7 @@ PHP_FUNCTION(explain)
         RETURN_FALSE;
       }
     } else if (options & EXPLAIN_STRING) {
+      explain_create_caches(&caches[0], &caches[1] TSRMLS_CC);
       ops = zend_compile_string(code, "explained" TSRMLS_CC);
     } else {
       zend_error(E_WARNING, "invalid options passed to explain (%d), please see documentation", options);
@@ -452,13 +470,15 @@ PHP_FUNCTION(explain)
       HashPosition position[2];
       zend_class_entry **ppce, *pce;
       
-      array_init(classes);
+      if (Z_TYPE_P(classes) != IS_ARRAY) {
+        array_init(classes);
+      }
       
       for (zend_hash_internal_pointer_reset_ex(CG(class_table), &position[0]);
           zend_hash_get_current_data_ex(CG(class_table), (void**) &ppce, &position[0]) == SUCCESS && (pce = *ppce);
           zend_hash_move_forward_ex(CG(class_table), &position[0])) {
           
-          if (pce->type  == ZEND_USER_CLASS) {
+          if (pce->type  == ZEND_USER_CLASS && !zend_hash_exists(&caches[0], pce->name, pce->name_length)) {
           
             zval *zce;
             zend_function *pfe;
@@ -487,20 +507,20 @@ PHP_FUNCTION(explain)
           }
       }
     }
-    
-    destroy_op_array(ops TSRMLS_CC);
-    efree(ops);
-    
+
     if (functions) {
       HashPosition position;
       zend_function *pfe;
       
-      array_init(functions);
+      if (Z_TYPE_P(functions) != IS_ARRAY) {
+        array_init(functions);
+      }
       
       for (zend_hash_internal_pointer_reset_ex(CG(function_table), &position);
            zend_hash_get_current_data_ex(CG(function_table), (void**) &pfe, &position) == SUCCESS;
            zend_hash_move_forward_ex(CG(function_table), &position)) {
-           if (pfe->common.type == ZEND_USER_FUNCTION) {
+           if (pfe->common.type == ZEND_USER_FUNCTION && 
+              !zend_hash_exists(&caches[1], pfe->common.function_name, strlen(pfe->common.function_name)+1)) {
              zval *zfe;
            
              ALLOC_INIT_ZVAL(zfe);
@@ -512,7 +532,11 @@ PHP_FUNCTION(explain)
              add_assoc_zval_ex(functions, pfe->common.function_name, strlen(pfe->common.function_name)+1, zfe);
            }
       }
-    }    
+    }
+    
+    destroy_op_array(ops TSRMLS_CC);
+    efree(ops);
+    explain_destroy_caches(&caches[0], &caches[1] TSRMLS_CC);    
   }
 }
 /* }}} */
