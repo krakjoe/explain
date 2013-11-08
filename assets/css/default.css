@@ -1,0 +1,52 @@
+*{
+  margin:0;padding:0;
+}
+body{
+  font-family: concourse-t3,sans-serif;
+  font-size:16px;
+  margin:auto;
+}
+div.body{
+  background-color:#ffffff;
+  color:#000000;
+}
+table{
+  border:0 none;
+  border-collapse:collapse;
+  width: 85%;
+}
+table tr + tr,table thead + tbody{  
+  border-top:1px solid #CCCCCC;
+}
+table td,table th{
+  border-left:0 none;
+  padding:2px 1em 2px 5px;
+}
+table td p.last,table th p.last{
+  margin-bottom:0;
+}
+table.field-list td,table.field-list th{
+  border:0 none !important;
+}
+table.footnote td,table.footnote th{
+  border:0 none !important;
+}
+th{
+  font-family: concourse-c4;
+  font-size:90%;
+  font-weight:normal;
+  padding-right:5px;
+  text-align:left;
+  text-transform:lowercase;
+}
+.code{
+  font-family: alix;
+  background-color:#F6F6F9;
+  font-size:0.95em;
+  padding:0 0.2em;
+}
+
+div#left {
+  float: left;
+  width: 15%;
+}
