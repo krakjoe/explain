@@ -462,6 +462,10 @@ PHP_FUNCTION(explain)
     } else {
       zend_error(E_WARNING, "invalid options passed to explain (%lu), please see documentation", options);
     }
+    
+    if (!ops) {
+      RETURN_FALSE;
+    }
 
     array_init(return_value);
     
