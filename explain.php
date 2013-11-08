@@ -55,41 +55,17 @@ function table($id, $explained, $lines) {
         <td>&nbsp;</td>
         <td><?=$opline["opline"] ?></td>
         <td><?=explain_opcode($opline["opcode"]) ?></td>
-        <?php if(isset($opline["op1_type"]) && $opline["op1_type"] != 8) : ?>
-        <td><?=explain_optype($opline["op1_type"]) ?></td>
-        <?php else: ?>
-        <td>-</td>
-        <?php endif; ?>
-        
-        <?php if(isset($opline["op1_type"]) && $opline["op1_type"] != EXPLAIN_IS_UNUSED) : ?>
-        <td><?=isset($opline["op1"]) ? $opline["op1"] : "-" ?></td>
-        <?php else: ?>
-        <td>-</td>
-        <?php endif; ?>
-        
-        <?php if(isset($opline["op2_type"]) && $opline["op2_type"] != EXPLAIN_IS_UNUSED) : ?>
-        <td><?=explain_optype($opline["op2_type"]) ?></td>
-        <?php else: ?>
-        <td>-</td>
-        <?php endif; ?>
-        
-        <?php if(isset($opline["op2_type"]) && $opline["op2_type"] != EXPLAIN_IS_UNUSED) : ?>
-        <td><?=isset($opline["op2"]) ? $opline["op2"] : "-" ?></td>
-        <?php else: ?>
-        <td>-</td>
-        <?php endif; ?>
-        
-        <?php if(isset($opline["result_type"]) && $opline["result_type"] != EXPLAIN_IS_UNUSED) : ?>
-        <td><?=explain_optype($opline["result_type"]) ?></td>
-        <?php else: ?>
-        <td>-</td>
-        <?php endif; ?>
-        
-        <?php if(isset($opline["result_type"]) && $opline["result_type"] != EXPLAIN_IS_UNUSED) : ?>
-        <td><?=isset($opline["result"]) ? $opline["result"] : "-" ?></td>
-        <?php else: ?>
-        <td>-</td>
-        <?php endif; ?>
+        <?php
+        foreach (array("op1", "op2", "result") as $op) {
+          if (isset($opline["{$op}_type"]) && 
+              $opline["{$op}_type"] != EXPLAIN_IS_UNUSED) {
+              printf("<td>%s</td>", explain_optype($opline["{$op}_type"]));
+          } else printf("<td>-</td>");
+          if (isset($opline[$op])) {
+            printf("<td>%s</td>", $opline[$op]);
+          } else printf("<td>-</td>");
+        }
+        ?>
     </tr>
     <?php endforeach; ?>
     </tbody>
