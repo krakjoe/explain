@@ -37,6 +37,20 @@ function table($id, $explained, $lines) {
     </thead>
     <tbody>
     <?php foreach ($explained as $num => $opline): ?>
+    <?php if (@$opline["lineno"] != @$explained[$num+1]["lineno"]): ?>
+    <?php   if ($lines[$opline["lineno"]-1]): ?>
+    <tr>
+      <td class="code">#<?=$opline["lineno"] ?></td>
+      <td colspan="8" class="code">
+      <pre>
+        <code class="php">
+          <?=htmlentities(rtrim($lines[$opline["lineno"]-1])); ?>
+        </code>
+      </pre>
+      </td>
+    </tr>
+    <?php   endif; ?>
+    <?php endif; ?>
     <tr>
         <td>&nbsp;</td>
         <td><?=$opline["opline"] ?></td>
@@ -77,20 +91,6 @@ function table($id, $explained, $lines) {
         <td>-</td>
         <?php endif; ?>
     </tr>
-    <?php if (@$opline["lineno"] != @$explained[$num+1]["lineno"]): ?>
-    <?php   if ($lines[$opline["lineno"]-1]): ?>
-    <tr>
-      <td class="code">#<?=$opline["lineno"] ?></td>
-      <td colspan="8" class="code">
-      <pre>
-        <code class="php">
-          <?=htmlentities(rtrim($lines[$opline["lineno"]-1])); ?>
-        </code>
-      </pre>
-      </td>
-    </tr>
-    <?php   endif; ?>
-    <?php endif; ?>
     <?php endforeach; ?>
     </tbody>
     </table>
