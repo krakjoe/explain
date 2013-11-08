@@ -1,19 +1,14 @@
 <?php
-$input = $argv[1];
-if (!$input) {
-  /* TODO(dm) do something pretty :) */
-  die("no input");
-}
-
-$code = file_get_contents($argv[1]);
-if (!$code) {
-  /* TODO(dm) do something pretty :) */
-  die("no code");
-}
-
-$lines = preg_split("~(\n)~", $code);
+$input = @$argv[1];
 $lastline = 1;
-$explained = explain($input, EXPLAIN_FILE, $classes, $functions);
+$classes = array();
+$functions = array();
+
+if ($input && ($code = @file_get_contents($input))) {
+  $lines = preg_split("~(\n)~", $code);  
+  $explained = explain(
+    $input, EXPLAIN_FILE, $classes, $functions);
+} else $explained = false;
 
 function table($id, $explained, $lines) {
   ?>
@@ -55,55 +50,30 @@ function table($id, $explained, $lines) {
         <td>&nbsp;</td>
         <td><?=$opline["opline"] ?></td>
         <td><?=explain_opcode($opline["opcode"]) ?></td>
-        <?php if(isset($opline["op1_type"]) && $opline["op1_type"] != 8) : ?>
-        <td><?=explain_optype($opline["op1_type"]) ?></td>
-        <?php else: ?>
-        <td>-</td>
-        <?php endif; ?>
-        
-        <?php if(isset($opline["op1_type"]) && $opline["op1_type"] != EXPLAIN_IS_UNUSED) : ?>
-        <td><?=isset($opline["op1"]) ? $opline["op1"] : "-" ?></td>
-        <?php else: ?>
-        <td>-</td>
-        <?php endif; ?>
-        
-        <?php if(isset($opline["op2_type"]) && $opline["op2_type"] != EXPLAIN_IS_UNUSED) : ?>
-        <td><?=explain_optype($opline["op2_type"]) ?></td>
-        <?php else: ?>
-        <td>-</td>
-        <?php endif; ?>
-        
-        <?php if(isset($opline["op2_type"]) && $opline["op2_type"] != EXPLAIN_IS_UNUSED) : ?>
-        <td><?=isset($opline["op2"]) ? $opline["op2"] : "-" ?></td>
-        <?php else: ?>
-        <td>-</td>
-        <?php endif; ?>
-        
-        <?php if(isset($opline["result_type"]) && $opline["result_type"] != EXPLAIN_IS_UNUSED) : ?>
-        <td><?=explain_optype($opline["result_type"]) ?></td>
-        <?php else: ?>
-        <td>-</td>
-        <?php endif; ?>
-        
-        <?php if(isset($opline["result_type"]) && $opline["result_type"] != EXPLAIN_IS_UNUSED) : ?>
-        <td><?=isset($opline["result"]) ? $opline["result"] : "-" ?></td>
-        <?php else: ?>
-        <td>-</td>
-        <?php endif; ?>
+        <?php
+        foreach (array("op1", "op2", "result") as $op) {
+          if (isset($opline["{$op}_type"]) && 
+              $opline["{$op}_type"] != EXPLAIN_IS_UNUSED) {
+              printf("<td>%s</td>", explain_optype($opline["{$op}_type"]));
+          } else printf("<td>-</td>");
+          if (isset($opline[$op])) {
+            printf("<td>%s</td>", $opline[$op]);
+          } else printf("<td>-</td>");
+        }
+        ?>
     </tr>
     <?php endforeach; ?>
     </tbody>
     </table>
   <?php
 }
-/* TODO(dm) in $classes and $functions are op arrays for everything in userland */
 ?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="">
+  <meta name="description" content="explain: <?=$input ?>">
   <meta name="author" content="krakjoe@php.net && dm@php.net">
 
   <title>Explain: <?=$input ?></title>
@@ -156,21 +126,23 @@ function table($id, $explained, $lines) {
   </div>
   <div id="right">
   <?php
-  table("main", $explained, $lines);
+  if ($explained) {
+    table("main", $explained, $lines);
   
-  if ($classes): 
-     foreach ($classes as $class => $methods): 
-       foreach ($methods as $method => $opcodes):
-         table("{$class}-{$method}", $opcodes, $lines);
+    if ($classes): 
+       foreach ($classes as $class => $methods): 
+         foreach ($methods as $method => $opcodes):
+           table("{$class}-{$method}", $opcodes, $lines);
+         endforeach;
        endforeach;
-     endforeach;
-  endif;
-  
-  if ($functions):
-    foreach ($functions as $function => $opcodes):
-      table($function, $opcodes, $lines);
-    endforeach;
-  endif;
+    endif;
+    
+    if ($functions):
+      foreach ($functions as $function => $opcodes):
+        table($function, $opcodes, $lines);
+      endforeach;
+    endif;
+  }
   ?>
   </div>
 </div>
