@@ -408,19 +408,38 @@ static inline void explain_op_array(zend_op_array *ops, zval *return_value TSRML
   }
 }
 
+/* The following two functions are copied from zend_execute_API.c, because they aren't ZEND_API */
+static int clean_non_persistent_function(zend_function *function TSRMLS_DC) /* {{{ */
+{
+  return (function->type == ZEND_INTERNAL_FUNCTION) ? ZEND_HASH_APPLY_STOP : ZEND_HASH_APPLY_REMOVE;
+}
+/* }}} */
+
+static int clean_non_persistent_class(zend_class_entry **ce TSRMLS_DC) /* {{{ */
+{
+  return ((*ce)->type == ZEND_INTERNAL_CLASS) ? ZEND_HASH_APPLY_STOP : ZEND_HASH_APPLY_REMOVE;
+}
+/* }}} */
+
 static inline void explain_create_caches(HashTable *classes, HashTable *functions TSRMLS_DC) { /* {{{ */
   zend_function tf;
   zend_class_entry *te;
-  
-  zend_hash_init(classes, zend_hash_num_elements(CG(class_table)), NULL, NULL, 0);
-  zend_hash_copy(classes, CG(class_table), NULL, &te, sizeof(zend_class_entry*));
-  zend_hash_init(functions, zend_hash_num_elements(CG(function_table)), NULL, NULL, 0);
-  zend_hash_copy(functions, CG(function_table), NULL, &tf, sizeof(zend_function));
+
+  *functions = *CG(function_table);
+  *classes = *CG(class_table);
+  zend_hash_init(CG(function_table), zend_hash_num_elements(functions), NULL, NULL, 0);
+  zend_hash_copy(CG(function_table), functions, NULL, &tf, sizeof(zend_function));
+  zend_hash_reverse_apply(CG(function_table), (apply_func_t) clean_non_persistent_function TSRMLS_CC);
+  zend_hash_init(CG(class_table), zend_hash_num_elements(classes), NULL, NULL, 0);
+  zend_hash_copy(CG(class_table), classes, NULL, &te, sizeof(zend_class_entry*));
+  zend_hash_reverse_apply(CG(class_table), (apply_func_t) clean_non_persistent_class TSRMLS_CC);
 } /* }}} */
 
 static inline void explain_destroy_caches(HashTable *classes, HashTable *functions TSRMLS_DC) { /* {{{ */
-  zend_hash_destroy(classes);
-  zend_hash_destroy(functions);
+  zend_hash_destroy(CG(function_table));
+  *CG(function_table) = *functions;
+  zend_hash_destroy(CG(class_table));
+  *CG(class_table) = *classes;
 } /* }}} */
 
 /* {{{ proto array explain(string code [, long options, array &classes, array &functions])
@@ -432,7 +451,7 @@ PHP_FUNCTION(explain)
        *functions = NULL;
   zend_ulong options = EXPLAIN_FILE;
   HashTable caches[2] = {0, 0};
-  
+
   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z|lzz", &code, &options, &classes, &functions) == FAILURE) {
     return;
   }
@@ -443,17 +462,11 @@ PHP_FUNCTION(explain)
 
     if (options & EXPLAIN_FILE) {
       if (php_stream_open_for_zend_ex(Z_STRVAL_P(code), &fh, USE_PATH|STREAM_OPEN_FOR_INCLUDE TSRMLS_CC) == SUCCESS) {
-        int dummy = 1;
-
-        if (zend_hash_add(&EG(included_files), fh.opened_path, strlen(fh.opened_path)+1, (void**) &dummy, sizeof(int), NULL) == SUCCESS) {
-          explain_create_caches(&caches[0], &caches[1] TSRMLS_CC);
-          ops = zend_compile_file(
-            &fh, ZEND_INCLUDE TSRMLS_CC);
-          zend_destroy_file_handle(&fh TSRMLS_CC);
-        } else {
-          zend_file_handle_dtor(&fh TSRMLS_CC);
-        }
+        explain_create_caches(&caches[0], &caches[1] TSRMLS_CC);
+        ops = zend_compile_file(&fh, ZEND_INCLUDE TSRMLS_CC);
+        zend_destroy_file_handle(&fh TSRMLS_CC);
       } else {
+        zend_error(E_WARNING, "file %s couldn't be opened", Z_STRVAL_P(code));
         RETURN_FALSE;
       }
     } else if (options & EXPLAIN_STRING) {
@@ -461,9 +474,12 @@ PHP_FUNCTION(explain)
       ops = zend_compile_string(code, "explained" TSRMLS_CC);
     } else {
       zend_error(E_WARNING, "invalid options passed to explain (%lu), please see documentation", options);
+      RETURN_FALSE;
     }
     
     if (!ops) {
+      explain_destroy_caches(&caches[0], &caches[1] TSRMLS_CC);
+      zend_error(E_WARNING, "explain was unable to compile code");
       RETURN_FALSE;
     }
 
@@ -482,9 +498,8 @@ PHP_FUNCTION(explain)
       for (zend_hash_internal_pointer_reset_ex(CG(class_table), &position[0]);
           zend_hash_get_current_data_ex(CG(class_table), (void**) &ppce, &position[0]) == SUCCESS && (pce = *ppce);
           zend_hash_move_forward_ex(CG(class_table), &position[0])) {
-          
-          if (pce->type  == ZEND_USER_CLASS && !zend_hash_exists(&caches[0], pce->name, pce->name_length)) {
-          
+
+          if (pce->type == ZEND_USER_CLASS) {
             zval *zce;
             zend_function *pfe;
             
@@ -527,10 +542,8 @@ PHP_FUNCTION(explain)
       for (zend_hash_internal_pointer_reset_ex(CG(function_table), &position);
            zend_hash_get_current_data_ex(CG(function_table), (void**) &pfe, &position) == SUCCESS;
            zend_hash_move_forward_ex(CG(function_table), &position)) {
-           
-           if (pfe->common.type == ZEND_USER_FUNCTION && 
-               zend_hash_get_current_key_ex(CG(function_table), &fe_name, &fe_name_len, &fe_idx, 0, &position) == HASH_KEY_IS_STRING &&
-              !zend_hash_exists(&caches[1], fe_name, fe_name_len)) {
+
+           if (pfe->common.type == ZEND_USER_FUNCTION && zend_hash_get_current_key_ex(CG(function_table), &fe_name, &fe_name_len, &fe_idx, 0, &position) == HASH_KEY_IS_STRING) {
              zval *zfe;
            
              ALLOC_INIT_ZVAL(zfe);
@@ -546,7 +559,7 @@ PHP_FUNCTION(explain)
     
     destroy_op_array(ops TSRMLS_CC);
     efree(ops);
-    explain_destroy_caches(&caches[0], &caches[1] TSRMLS_CC);    
+    explain_destroy_caches(&caches[0], &caches[1] TSRMLS_CC);
   }
 }
 /* }}} */
