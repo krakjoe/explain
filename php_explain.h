@@ -31,6 +31,16 @@ extern zend_module_entry explain_module_entry;
 #include "TSRM.h"
 #endif
 
+ZEND_BEGIN_MODULE_GLOBALS(explain)
+  HashTable explained;
+ZEND_END_MODULE_GLOBALS(explain)
+
+#ifdef ZTS
+#define EX_G(v) TSRMG(explain_globals_id, zend_explain_globals *, v)
+#else
+#define EX_G(v) (explain_globals.v)
+#endif
+
 #endif	/* PHP_EXPLAIN_H */
 
 

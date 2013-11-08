@@ -3,20 +3,29 @@ $input = @$argv[1];
 $lastline = 1;
 $classes = array();
 $functions = array();
+$main = false;
 
-if ($input && ($code = @file_get_contents($input))) {
-  $lines = preg_split("~(\n)~", $code);  
-  $explained = explain(
-    $input, EXPLAIN_FILE, $classes, $functions);
-} else $explained = false;
+function scanpath($path) {
+  $files = array();
+  if (is_dir($path)) {
+    foreach (scandir($path) as $file) {
+      if ($file != "." && $file != "..") {
+        $scan = "{$path}/{$file}";
+        if (is_dir($scan)) {
+          $files = array_merge(
+            $files, scanpath($scan));
+        } else if (preg_match("~\.php\$~", $scan)) {
+          $files[] = $scan;
+        }
+      }
+    }
+  }
+  return $files;
+}
 
-function table($id, $explained, $lines) {
+function table($id, &$explained, &$lines, &$processing) {
   ?>
-  <?php if ($id == "main"): ?>
-  <table id="table-main" >
-  <?php else: ?>
-  <table id="<?=sprintf("table-%s", md5($id)) ?>" style="display:none;">
-  <?php endif; ?>
+    <table id="<?=sprintf("table-%s", md5($id)) ?>" style="display:none;">
     <thead>
         <tr>
             <th>LINE</th>
@@ -33,13 +42,17 @@ function table($id, $explained, $lines) {
     <tbody>
     <?php foreach ($explained as $num => $opline): ?>
     <?php if (@$opline["lineno"] != @$explained[$num+1]["lineno"]): ?>
-    <?php   if ($lines[$opline["lineno"]-1]): ?>
+    <?php   if (@$lines[$opline["lineno"]-1]): ?>
     <tr>
       <td class="code">#<?=$opline["lineno"] ?></td>
       <td colspan="8" class="code">
       <pre>
         <code class="php">
-          <?=htmlentities(rtrim($lines[$opline["lineno"]-1])); ?>
+          <?php
+          if (function_exists('gzcompress')) {
+            echo htmlentities(rtrim(gzuncompress($lines[$opline["lineno"]-1])));
+          } else echo htmlentities(rtrim($lines[$opline["lineno"]-1]));
+          ?>
         </code>
       </pre>
       </td>
@@ -57,7 +70,7 @@ function table($id, $explained, $lines) {
               printf("<td>%s</td>", explain_optype($opline["{$op}_type"]));
           } else printf("<td>-</td>");
           if (isset($opline[$op])) {
-            printf("<td>%s</td>", htmlentities(rtrim($opline[$op])));
+            printf("<td>%s</td>", $opline[$op]);
           } else printf("<td>-</td>");
         }
         ?>
@@ -66,6 +79,30 @@ function table($id, $explained, $lines) {
     </tbody>
     </table>
   <?php
+}
+
+if (is_dir($input)) {
+  foreach (scanpath($input) as $file) {
+    $name = substr($file, strlen($input));
+    
+    $explained[$name] = explain(
+      $file, EXPLAIN_FILE, $classes[$name], $functions[$name]);
+      foreach (preg_split("~(\n)~", file_get_contents($file)) as $line) {
+        if (function_exists('gzcompress')) {
+          $lines[$name][] = gzcompress($line);
+        } else $lines[$name][] = $line;
+      }
+  }
+} else {
+  if ($input && ($code = @file_get_contents($input))) {
+    foreach (preg_split("~(\n)~", $code) as $line) {
+      if (function_exists('gzcompress')) {
+        $lines[$input][] = gzcompress($line);
+      } else $lines[$input][] = $line;
+    }
+    $explained[$input] = explain(
+      $input, EXPLAIN_FILE, $classes[$input], $functions[$input]);
+  } else $explained = false;
 }
 ?>
 <!DOCTYPE html>
@@ -94,54 +131,61 @@ function table($id, $explained, $lines) {
   <div id="left">
     <div id="tree" class="jstree">
       <ul>
-        <li id="main"><a href="#">{main}</a></li>
-        <?php if ($classes): ?>
-        <li id="classes"><a href="#">Classes</a>
+        <?php foreach ($explained as $file => $explanation): ?>
+        <li id="<?=md5($file) ?>">
+        <a href="#"><?=$file ?></a>
           <ul>
-            <?php foreach ($classes as $class => $methods): ?>
-            <li><a href="#"><?=$class; ?></a>
+            <?php if ($classes[$file]): ?>
+            <li id="classes"><a href="#">Classes</a>
               <ul>
-                <?php foreach($methods as $method => $opcodes): ?>
-                <li id="<?=md5("{$class}-{$method}") ?>"><a href="#"><?=$method ?></a></li>
+                <?php foreach ($classes[$file] as $class => $methods): ?>
+                <li><a href="#"><?=$class ?></a>
+                  <ul>
+                    <?php foreach($methods as $method => $opcodes): ?>
+                    <li id="<?=md5("{$file}-{$class}-{$method}") ?>"><a href="#"><?=$method ?></a></li>
+                    <?php endforeach; ?>
+                  </ul>
+                </li>
                 <?php endforeach; ?>
               </ul>
             </li>
-            <?php endforeach; ?>
+            <?php endif; ?>
+            
+            <?php if ($functions[$file]): ?>
+            <li id="functions"><a href="#">Functions</a>
+              <ul>
+              <?php   foreach($functions[$file] as $function => $opcodes): ?>
+                <li id="<?=md5("{$file}-{$function}") ?>"><a href="#"><?=$function ?></a></li>
+              <?php   endforeach; ?>
+              </ul>
+            </li>
+            <?php endif; ?>
           </ul>
         </li>
-        <?php endif; ?>
-        
-        <?php if ($functions): ?>
-        <li id="functions"><a href="#">Functions</a>
-          <ul>
-          <?php   foreach($functions as $function => $opcodes): ?>
-            <li id="<?=md5($function) ?>"><a href="#"><?=$function ?></a></li>
-          <?php   endforeach; ?>
-          </ul>
-        </li>
-        <?php endif; ?>
-        </ul>
+        <?php endforeach; ?>
       </ul>
     </div>
   </div>
   <div id="right">
   <?php
   if ($explained) {
-    table("main", $explained, $lines);
+    foreach ($explained as $file => $explanation) {
+      table($file, $explanation, $lines[$file], $process);
   
-    if ($classes): 
-       foreach ($classes as $class => $methods): 
-         foreach ($methods as $method => $opcodes):
-           table("{$class}-{$method}", $opcodes, $lines);
+      if ($classes[$file]): 
+         foreach ($classes[$file] as $class => $methods): 
+           foreach ($methods as $method => $opcodes):
+             table("{$file}-{$class}-{$method}", $opcodes, $lines[$file], $process);
+           endforeach;
          endforeach;
-       endforeach;
-    endif;
-    
-    if ($functions):
-      foreach ($functions as $function => $opcodes):
-        table($function, $opcodes, $lines);
-      endforeach;
-    endif;
+      endif;
+      
+      if ($functions[$file]):
+        foreach ($functions[$file] as $function => $opcodes):
+          table("{$file}-{$function}", $opcodes, $lines[$file], $process);
+        endforeach;
+      endif;
+    }
   }
   ?>
   </div>

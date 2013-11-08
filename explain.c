@@ -43,6 +43,8 @@ typedef struct _explain_opcode_t {
 
 #include "explain_opcodes.h"
 
+ZEND_DECLARE_MODULE_GLOBALS(explain);
+
 static inline void explain_opcode(long opcode, zval **return_value_ptr TSRMLS_DC) { /* {{{ */
   explain_opcode_t decode = opcodes[opcode];
   
@@ -86,16 +88,7 @@ static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint t
     } break;
 
     case IS_CONST: {
-      zval  *copy;
-
-      ALLOC_ZVAL(copy);
-      *copy = (op->literal->constant);
-      zval_copy_ctor(copy);
-      
-      add_assoc_zval_ex(
-        *return_value_ptr, name, name_len, copy);
-        
-      Z_DELREF_P(copy);
+      add_assoc_zval_ex(*return_value_ptr, name, name_len, &op->literal->constant);
     } break;
   }
 } /* }}} */
@@ -234,21 +227,16 @@ static inline void explain_create_caches(HashTable *classes, HashTable *function
   zend_function tf;
   zend_class_entry *te;
 
-  *functions = *CG(function_table);
-  *classes = *CG(class_table);
-  zend_hash_init(CG(function_table), zend_hash_num_elements(functions), NULL, NULL, 0);
-  zend_hash_copy(CG(function_table), functions, NULL, &tf, sizeof(zend_function));
-  zend_hash_reverse_apply(CG(function_table), (apply_func_t) clean_non_persistent_function TSRMLS_CC);
-  zend_hash_init(CG(class_table), zend_hash_num_elements(classes), NULL, NULL, 0);
-  zend_hash_copy(CG(class_table), classes, NULL, &te, sizeof(zend_class_entry*));
-  zend_hash_reverse_apply(CG(class_table), (apply_func_t) clean_non_persistent_class TSRMLS_CC);
+  zend_hash_init(classes, zend_hash_num_elements(classes), NULL, NULL, 0);
+  zend_hash_copy(classes, classes, NULL, &te, sizeof(zend_class_entry*));
+
+  zend_hash_init(functions, zend_hash_num_elements(functions), NULL, NULL, 0);
+  zend_hash_copy(functions, functions, NULL, &tf, sizeof(zend_function));
 } /* }}} */
 
 static inline void explain_destroy_caches(HashTable *classes, HashTable *functions TSRMLS_DC) { /* {{{ */
-  zend_hash_destroy(CG(function_table));
-  *CG(function_table) = *functions;
-  zend_hash_destroy(CG(class_table));
-  *CG(class_table) = *classes;
+  zend_hash_destroy(classes);
+  zend_hash_destroy(functions);
 } /* }}} */
 
 /* {{{ proto array explain(string code [, long options, array &classes, array &functions])
@@ -294,6 +282,8 @@ PHP_FUNCTION(explain)
       zend_error(E_WARNING, "explain was unable to compile code");
       RETURN_FALSE;
     }
+    
+    zend_hash_next_index_insert(&EX_G(explained), &ops, sizeof(zend_op_array*), NULL);
 
     array_init(return_value);
     
@@ -302,6 +292,9 @@ PHP_FUNCTION(explain)
     if (classes) {
       HashPosition position[2];
       zend_class_entry **ppce, *pce;
+      char *pce_name = NULL;
+      zend_uint pce_name_len = 0;
+      zend_ulong pce_idx = 0L;
       
       if (Z_TYPE_P(classes) != IS_ARRAY) {
         array_init(classes);
@@ -310,12 +303,13 @@ PHP_FUNCTION(explain)
       for (zend_hash_internal_pointer_reset_ex(CG(class_table), &position[0]);
           zend_hash_get_current_data_ex(CG(class_table), (void**) &ppce, &position[0]) == SUCCESS && (pce = *ppce);
           zend_hash_move_forward_ex(CG(class_table), &position[0])) {
-
-          if (pce->type == ZEND_USER_CLASS) {
+          if (pce->type  == ZEND_USER_CLASS && 
+              (zend_hash_get_current_key_ex(CG(class_table), &pce_name, &pce_name_len, &pce_idx, 0, &position[0])==HASH_KEY_IS_STRING) && 
+              !zend_hash_exists(&caches[0], pce_name, pce_name_len)) {
             zval *zce;
             zend_function *pfe;
             
-            ALLOC_INIT_ZVAL(zce);
+            MAKE_STD_ZVAL(zce);
             
             array_init(zce);
             
@@ -325,7 +319,7 @@ PHP_FUNCTION(explain)
                  if (pfe->common.type == ZEND_USER_FUNCTION) {
                    zval *zfe;
                  
-                   ALLOC_INIT_ZVAL(zfe);
+                   MAKE_STD_ZVAL(zfe);
                    
                    array_init(zfe);
                    
@@ -358,7 +352,7 @@ PHP_FUNCTION(explain)
            if (pfe->common.type == ZEND_USER_FUNCTION && zend_hash_get_current_key_ex(CG(function_table), &fe_name, &fe_name_len, &fe_idx, 0, &position) == HASH_KEY_IS_STRING) {
              zval *zfe;
            
-             ALLOC_INIT_ZVAL(zfe);
+             MAKE_STD_ZVAL(zfe);
              
              array_init(zfe);
              
@@ -368,10 +362,8 @@ PHP_FUNCTION(explain)
            }
       }
     }
-    
-    destroy_op_array(ops TSRMLS_CC);
-    efree(ops);
-    explain_destroy_caches(&caches[0], &caches[1] TSRMLS_CC);
+
+    explain_destroy_caches(&caches[0], &caches[1] TSRMLS_CC);    
   }
 }
 /* }}} */
@@ -436,8 +428,20 @@ const zend_function_entry explain_functions[] = {
 };
 /* }}} */
 
+/* {{{ */
+static inline void php_explain_globals_ctor(zend_explain_globals *eg) {} /* }}} */
+
+static inline void php_explain_destroy_ops(zend_op_array **ops) { /* {{{ */
+  TSRMLS_FETCH();
+  
+  destroy_op_array(*ops TSRMLS_CC);
+  efree(*ops);
+} /* }}} */
+
 /* {{{ MINIT */
 static PHP_MINIT_FUNCTION(explain) {
+  ZEND_INIT_MODULE_GLOBALS(explain, php_explain_globals_ctor, NULL);
+  
   REGISTER_LONG_CONSTANT("EXPLAIN_STRING",          EXPLAIN_STRING,      CONST_CS | CONST_PERSISTENT);
   REGISTER_LONG_CONSTANT("EXPLAIN_FILE",            EXPLAIN_FILE,        CONST_CS | CONST_PERSISTENT);
   REGISTER_LONG_CONSTANT("EXPLAIN_OPLINE",          EXPLAIN_OPLINE,      CONST_CS | CONST_PERSISTENT);
@@ -451,6 +455,14 @@ static PHP_MINIT_FUNCTION(explain) {
   return SUCCESS;
 } /* }}} */
 
+static PHP_RINIT_FUNCTION(explain) {
+  zend_hash_init(&EX_G(explained), 8, NULL, (dtor_func_t) php_explain_destroy_ops, 0);
+}
+
+static PHP_RSHUTDOWN_FUNCTION(explain) {
+  zend_hash_destroy(&EX_G(explained));
+}
+
 /* {{{ explain_module_entry
  */
 zend_module_entry explain_module_entry = {
@@ -459,8 +471,8 @@ zend_module_entry explain_module_entry = {
   explain_functions,
   PHP_MINIT(explain),
   NULL,
-  NULL,
-  NULL,
+  PHP_RINIT(explain),
+  PHP_RSHUTDOWN(explain),
   PHP_MINFO(explain),
   PHP_EXPLAIN_VERSION,
   STANDARD_MODULE_PROPERTIES
