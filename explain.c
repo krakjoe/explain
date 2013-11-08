@@ -516,6 +516,9 @@ PHP_FUNCTION(explain)
     if (functions) {
       HashPosition position;
       zend_function *pfe;
+      char *fe_name;
+      zend_uint fe_name_len;
+      zend_ulong fe_idx;
       
       if (Z_TYPE_P(functions) != IS_ARRAY) {
         array_init(functions);
@@ -524,8 +527,10 @@ PHP_FUNCTION(explain)
       for (zend_hash_internal_pointer_reset_ex(CG(function_table), &position);
            zend_hash_get_current_data_ex(CG(function_table), (void**) &pfe, &position) == SUCCESS;
            zend_hash_move_forward_ex(CG(function_table), &position)) {
+           
            if (pfe->common.type == ZEND_USER_FUNCTION && 
-              !zend_hash_exists(&caches[1], pfe->common.function_name, strlen(pfe->common.function_name)+1)) {
+               zend_hash_get_current_key_ex(CG(function_table), &fe_name, &fe_name_len, &fe_idx, 0, &position) == HASH_KEY_IS_STRING &&
+              !zend_hash_exists(&caches[1], fe_name, fe_name_len)) {
              zval *zfe;
            
              ALLOC_INIT_ZVAL(zfe);
@@ -534,7 +539,7 @@ PHP_FUNCTION(explain)
              
              explain_op_array(&pfe->op_array, zfe TSRMLS_CC);
              
-             add_assoc_zval_ex(functions, pfe->common.function_name, strlen(pfe->common.function_name)+1, zfe);
+             add_assoc_zval_ex(functions, fe_name, fe_name_len, zfe);
            }
       }
     }
