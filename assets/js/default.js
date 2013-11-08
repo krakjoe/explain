@@ -13,10 +13,10 @@ $(function(){
     if (data.rslt.obj.attr("id")) {
       var select = $("#table-"+data.rslt.obj.attr("id"));
       if (select) {
-        selected.css({"display": "none"});
-        select.css({"display": ""});
-        
-        selected = select;
+        selected.fadeOut(666, function(){
+          select.fadeIn();
+          selected = select;
+        });
       }
     }
   })
