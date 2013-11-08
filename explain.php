@@ -57,7 +57,7 @@ function table($id, $explained, $lines) {
               printf("<td>%s</td>", explain_optype($opline["{$op}_type"]));
           } else printf("<td>-</td>");
           if (isset($opline[$op])) {
-            printf("<td>%s</td>", $opline[$op]);
+            printf("<td>%s</td>", htmlentities(rtrim($opline[$op])));
           } else printf("<td>-</td>");
         }
         ?>
