@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="krakjoe@php.net && dm@php.net">
+
+  <title>Explain: /opt/php-zts/htdocs/index.php</title>
+
+  <script type="text/javascript" src="assets/js/highlight.min.js"></script>
+  <script type="text/javascript" src="assets/js/jquery.js"></script>
+  <script type="text/javascript" src="assets/js/jquery.cookie.js"></script>
+  <script type="text/javascript" src="assets/js/jquery.hotkeys.js"></script>
+  <script type="text/javascript" src="assets/js/jquery.jstree.js"></script>
+  <script type="text/javascript" src="assets/js/default.js"></script>
+  
+  <link type="text/css" media="all" rel="stylesheet" href="assets/css/fonts.css" />
+  <link type="text/css" media="all" rel="stylesheet" href="assets/css/default.css" />
+  <link type="text/css" media="all" rel="stylesheet" href="assets/css/highlight.css" />
+</head>
+<body>
+<div id="container">
+  <div id="left">
+    <div id="tree" class="jstree">
+      <ul>
+        <li id="main"><a href="#">{main}</a></li>
+                
+                <li id="functions"><a href="#">Functions</a>
+          <ul>
+                      <li id="8113559d204ac409edc28a2f50ba648b"><a href="#">{closure}</a></li>
+                    </ul>
+        </li>
+                </ul>
+      </ul>
+    </div>
+  </div>
+  <div id="right">
+      <table id="table-main" >
+      <thead>
+        <tr>
+            <th>LINE</th>
+            <th>OPLINE</th>
+            <th>OPCODE</th>
+            <th>OP1(TYPE)</th>
+            <th>OP1</th>
+            <th>OP2(TYPE)</th>
+            <th>OP2</th>
+            <th>RESULT(TYPE)</th>
+            <th>RESULT</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <td>&nbsp;</td>
+        <td>0</td>
+        <td>ZEND_INCLUDE_OR_EVAL</td>
+                <td>IS_CONST</td>
+                
+                <td>vendor/autoload.php</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>IS_VAR|EXT_TYPE_UNUSED</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+      <td class="code">#2</td>
+      <td colspan="8" class="code">
+      <pre>
+        <code class="php">
+          include (&quot;vendor/autoload.php&quot;);        </code>
+      </pre>
+      </td>
+    </tr>
+                <tr>
+        <td>&nbsp;</td>
+        <td>1</td>
+        <td>ZEND_FETCH_CLASS</td>
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>IS_CONST</td>
+                
+                <td>Silex\Application</td>
+                
+                <td>IS_VAR</td>
+                
+                <td>0</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>2</td>
+        <td>ZEND_NEW</td>
+                <td>IS_VAR</td>
+                
+                <td>0</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>IS_VAR</td>
+                
+                <td>1</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>3</td>
+        <td>ZEND_DO_FCALL_BY_NAME</td>
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>IS_VAR|EXT_TYPE_UNUSED</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>4</td>
+        <td>ZEND_ASSIGN</td>
+                <td>IS_CV</td>
+                
+                <td>app</td>
+                
+                <td>IS_VAR</td>
+                
+                <td>1</td>
+                
+                <td>IS_VAR|EXT_TYPE_UNUSED</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+      <td class="code">#4</td>
+      <td colspan="8" class="code">
+      <pre>
+        <code class="php">
+          $app = new Silex\Application();        </code>
+      </pre>
+      </td>
+    </tr>
+                <tr>
+        <td>&nbsp;</td>
+        <td>5</td>
+        <td>ZEND_INIT_METHOD_CALL</td>
+                <td>IS_CV</td>
+                
+                <td>app</td>
+                
+                <td>IS_CONST</td>
+                
+                <td>register</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>6</td>
+        <td>ZEND_FETCH_CLASS</td>
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>IS_CONST</td>
+                
+                <td>Silex\Provider\TwigServiceProvider</td>
+                
+                <td>IS_VAR</td>
+                
+                <td>2</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>7</td>
+        <td>ZEND_NEW</td>
+                <td>IS_VAR</td>
+                
+                <td>2</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>IS_VAR</td>
+                
+                <td>3</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>8</td>
+        <td>ZEND_DO_FCALL_BY_NAME</td>
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>IS_VAR|EXT_TYPE_UNUSED</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>9</td>
+        <td>ZEND_SEND_VAR_NO_REF</td>
+                <td>IS_VAR</td>
+                
+                <td>3</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+      <td class="code">#6</td>
+      <td colspan="8" class="code">
+      <pre>
+        <code class="php">
+          $app-&gt;register(new Silex\Provider\TwigServiceProvider(), array(        </code>
+      </pre>
+      </td>
+    </tr>
+                <tr>
+        <td>&nbsp;</td>
+        <td>10</td>
+        <td>ZEND_SEND_VAL</td>
+                <td>IS_CONST</td>
+                
+                <td>%s/twigs</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>11</td>
+        <td>ZEND_SEND_VAL</td>
+                <td>IS_CONST</td>
+                
+                <td>/usr/htdocs</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>12</td>
+        <td>ZEND_DO_FCALL</td>
+                <td>IS_CONST</td>
+                
+                <td>sprintf</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>IS_VAR</td>
+                
+                <td>4</td>
+            </tr>
+            <tr>
+      <td class="code">#7</td>
+      <td colspan="8" class="code">
+      <pre>
+        <code class="php">
+              &quot;twig.path&quot; =&gt; sprintf(&quot;%s/twigs&quot;, __DIR__)        </code>
+      </pre>
+      </td>
+    </tr>
+                <tr>
+        <td>&nbsp;</td>
+        <td>13</td>
+        <td>ZEND_INIT_ARRAY</td>
+                <td>IS_VAR</td>
+                
+                <td>4</td>
+                
+                <td>IS_CONST</td>
+                
+                <td>twig.path</td>
+                
+                <td>IS_TMP_VAR</td>
+                
+                <td>5</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>14</td>
+        <td>ZEND_SEND_VAL</td>
+                <td>IS_TMP_VAR</td>
+                
+                <td>5</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>15</td>
+        <td>ZEND_DO_FCALL_BY_NAME</td>
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>IS_VAR|EXT_TYPE_UNUSED</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+      <td class="code">#8</td>
+      <td colspan="8" class="code">
+      <pre>
+        <code class="php">
+          ));        </code>
+      </pre>
+      </td>
+    </tr>
+                <tr>
+        <td>&nbsp;</td>
+        <td>16</td>
+        <td>ZEND_INIT_METHOD_CALL</td>
+                <td>IS_CV</td>
+                
+                <td>app</td>
+                
+                <td>IS_CONST</td>
+                
+                <td>get</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>17</td>
+        <td>ZEND_SEND_VAL</td>
+                <td>IS_CONST</td>
+                
+                <td>/</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>18</td>
+        <td>ZEND_DECLARE_LAMBDA_FUNCTION</td>
+                <td>IS_CONST</td>
+                
+                <td> {closure}/usr/htdocs/index.php0x7fbb8b4770d5</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>IS_TMP_VAR</td>
+                
+                <td>6</td>
+            </tr>
+            <tr>
+      <td class="code">#10</td>
+      <td colspan="8" class="code">
+      <pre>
+        <code class="php">
+          $app-&gt;get(&quot;/&quot;, function() use (&amp;$app) {        </code>
+      </pre>
+      </td>
+    </tr>
+                <tr>
+        <td>&nbsp;</td>
+        <td>19</td>
+        <td>ZEND_SEND_VAL</td>
+                <td>IS_TMP_VAR</td>
+                
+                <td>6</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>20</td>
+        <td>ZEND_DO_FCALL_BY_NAME</td>
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>IS_VAR|EXT_TYPE_UNUSED</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+      <td class="code">#14</td>
+      <td colspan="8" class="code">
+      <pre>
+        <code class="php">
+          });        </code>
+      </pre>
+      </td>
+    </tr>
+                <tr>
+        <td>&nbsp;</td>
+        <td>21</td>
+        <td>ZEND_INIT_METHOD_CALL</td>
+                <td>IS_CV</td>
+                
+                <td>app</td>
+                
+                <td>IS_CONST</td>
+                
+                <td>run</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>22</td>
+        <td>ZEND_DO_FCALL_BY_NAME</td>
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>IS_VAR|EXT_TYPE_UNUSED</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+      <td class="code">#16</td>
+      <td colspan="8" class="code">
+      <pre>
+        <code class="php">
+          $app-&gt;run();        </code>
+      </pre>
+      </td>
+    </tr>
+                <tr>
+        <td>&nbsp;</td>
+        <td>23</td>
+        <td>ZEND_RETURN</td>
+                <td>IS_CONST</td>
+                
+                <td>1</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+            </tr>
+                    </tbody>
+    </table>
+      <table id="table-8113559d204ac409edc28a2f50ba648b" style="display:none;">
+      <thead>
+        <tr>
+            <th>LINE</th>
+            <th>OPLINE</th>
+            <th>OPCODE</th>
+            <th>OP1(TYPE)</th>
+            <th>OP1</th>
+            <th>OP2(TYPE)</th>
+            <th>OP2</th>
+            <th>RESULT(TYPE)</th>
+            <th>RESULT</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <td>&nbsp;</td>
+        <td>0</td>
+        <td>ZEND_FETCH_W</td>
+                <td>IS_CONST</td>
+                
+                <td>app</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>IS_VAR</td>
+                
+                <td>0</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>1</td>
+        <td>ZEND_ASSIGN_REF</td>
+                <td>IS_CV</td>
+                
+                <td>app</td>
+                
+                <td>IS_VAR</td>
+                
+                <td>0</td>
+                
+                <td>IS_UNUSED|EXT_TYPE_UNUSED</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+      <td class="code">#10</td>
+      <td colspan="8" class="code">
+      <pre>
+        <code class="php">
+          $app-&gt;get(&quot;/&quot;, function() use (&amp;$app) {        </code>
+      </pre>
+      </td>
+    </tr>
+                <tr>
+        <td>&nbsp;</td>
+        <td>2</td>
+        <td>ZEND_FETCH_DIM_R</td>
+                <td>IS_CV</td>
+                
+                <td>app</td>
+                
+                <td>IS_CONST</td>
+                
+                <td>twig</td>
+                
+                <td>IS_VAR</td>
+                
+                <td>1</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>3</td>
+        <td>ZEND_INIT_METHOD_CALL</td>
+                <td>IS_VAR</td>
+                
+                <td>1</td>
+                
+                <td>IS_CONST</td>
+                
+                <td>render</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>4</td>
+        <td>ZEND_SEND_VAL</td>
+                <td>IS_CONST</td>
+                
+                <td>index.twig</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+      <td class="code">#11</td>
+      <td colspan="8" class="code">
+      <pre>
+        <code class="php">
+              return $app[&quot;twig&quot;]-&gt;render(&quot;index.twig&quot;, array(        </code>
+      </pre>
+      </td>
+    </tr>
+                <tr>
+        <td>&nbsp;</td>
+        <td>5</td>
+        <td>ZEND_SEND_VAL</td>
+                <td>IS_CONST</td>
+                
+                <td>c</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>6</td>
+        <td>ZEND_DO_FCALL</td>
+                <td>IS_CONST</td>
+                
+                <td>date</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>IS_VAR</td>
+                
+                <td>2</td>
+            </tr>
+            <tr>
+      <td class="code">#12</td>
+      <td colspan="8" class="code">
+      <pre>
+        <code class="php">
+                  &quot;date&quot; =&gt; date(&quot;c&quot;)        </code>
+      </pre>
+      </td>
+    </tr>
+                <tr>
+        <td>&nbsp;</td>
+        <td>7</td>
+        <td>ZEND_INIT_ARRAY</td>
+                <td>IS_VAR</td>
+                
+                <td>2</td>
+                
+                <td>IS_CONST</td>
+                
+                <td>date</td>
+                
+                <td>IS_TMP_VAR</td>
+                
+                <td>3</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>8</td>
+        <td>ZEND_SEND_VAL</td>
+                <td>IS_TMP_VAR</td>
+                
+                <td>3</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>9</td>
+        <td>ZEND_DO_FCALL_BY_NAME</td>
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>IS_VAR</td>
+                
+                <td>4</td>
+            </tr>
+            <tr>
+        <td>&nbsp;</td>
+        <td>10</td>
+        <td>ZEND_RETURN</td>
+                <td>IS_VAR</td>
+                
+                <td>4</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+      <td class="code">#13</td>
+      <td colspan="8" class="code">
+      <pre>
+        <code class="php">
+              ));        </code>
+      </pre>
+      </td>
+    </tr>
+                <tr>
+        <td>&nbsp;</td>
+        <td>11</td>
+        <td>ZEND_RETURN</td>
+                <td>IS_CONST</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+                
+                <td>-</td>
+            </tr>
+            <tr>
+      <td class="code">#14</td>
+      <td colspan="8" class="code">
+      <pre>
+        <code class="php">
+          });        </code>
+      </pre>
+      </td>
+    </tr>
+                </tbody>
+    </table>
+    </div>
+</div>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+</body>
+</html>
