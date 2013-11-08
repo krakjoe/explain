@@ -1,19 +1,12 @@
 <?php
-$input = $argv[1];
-if (!$input) {
-  /* TODO(dm) do something pretty :) */
-  die("no input");
-}
-
-$code = file_get_contents($argv[1]);
-if (!$code) {
-  /* TODO(dm) do something pretty :) */
-  die("no code");
-}
-
-$lines = preg_split("~(\n)~", $code);
+$input = @$argv[1];
 $lastline = 1;
-$explained = explain($input, EXPLAIN_FILE, $classes, $functions);
+
+if ($input && ($code = file_get_contents($argv[1]))) {
+  $lines = preg_split("~(\n)~", $code);  
+  $explained = explain(
+    $input, EXPLAIN_FILE, $classes, $functions);
+}
 
 function table($id, $explained, $lines) {
   ?>
@@ -131,21 +124,23 @@ function table($id, $explained, $lines) {
   </div>
   <div id="right">
   <?php
-  table("main", $explained, $lines);
+  if ($explained) {
+    table("main", $explained, $lines);
   
-  if ($classes): 
-     foreach ($classes as $class => $methods): 
-       foreach ($methods as $method => $opcodes):
-         table("{$class}-{$method}", $opcodes, $lines);
+    if ($classes): 
+       foreach ($classes as $class => $methods): 
+         foreach ($methods as $method => $opcodes):
+           table("{$class}-{$method}", $opcodes, $lines);
+         endforeach;
        endforeach;
-     endforeach;
-  endif;
-  
-  if ($functions):
-    foreach ($functions as $function => $opcodes):
-      table($function, $opcodes, $lines);
-    endforeach;
-  endif;
+    endif;
+    
+    if ($functions):
+      foreach ($functions as $function => $opcodes):
+        table($function, $opcodes, $lines);
+      endforeach;
+    endif;
+  }
   ?>
   </div>
 </div>
