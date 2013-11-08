@@ -13,7 +13,7 @@ div.body{
 table{
   border:0 none;
   border-collapse:collapse;
-  width: 85%;
+  width: 100%;
 }
 table tr + tr,table thead + tbody{  
   border-top:1px solid #CCCCCC;
@@ -45,7 +45,17 @@ th{
   font-size:0.95em;
   padding:0 0.2em;
 }
-
+div#container {
+  position: relative;
+  clear: both;
+  float: left;
+  width: 100%;
+  overflow: hidden;
+}
+div#right {
+  float: right;
+  width: 85%;
+}
 div#left {
   float: left;
   width: 15%;
