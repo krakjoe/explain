@@ -155,10 +155,27 @@ static inline void explain_op_array(zend_op_array *ops, zval *return_value TSRML
               zopline, "op1", sizeof("op1"), opline->op1.jmp_addr - ops->opcodes);
           break;
           
+          case ZEND_JMPZNZ:
+            add_assoc_long_ex(
+              zopline, "op1_type", sizeof("op1_type"), opline->op1_type);
+            explain_zend_op(ops, &opline->op1, opline->op1_type, "op1", sizeof("op1"), &vars, &zopline TSRMLS_CC);
+            
+            /* TODO(krakjoe) needs opline->extended_value on true, opline_num on false */
+            add_assoc_long_ex(
+              zopline, "op2_type", sizeof("op2_type"), EXPLAIN_OPLINE);
+            add_assoc_long_ex(
+              zopline, "op2", sizeof("op2"), opline->op2.opline_num);
+
+            add_assoc_long_ex(
+                zopline, "result_type", sizeof("result_type"), opline->result_type);
+            explain_zend_op(ops, &opline->result, opline->result_type, "result", sizeof("result"), &vars, &zopline TSRMLS_CC);
+          break;
+          
           case ZEND_JMPZ:
           case ZEND_JMPNZ:
           case ZEND_JMPZ_EX:
           case ZEND_JMPNZ_EX:
+          
 #ifdef ZEND_JMP_SET
           case ZEND_JMP_SET:
 #endif      

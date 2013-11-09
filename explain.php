@@ -37,6 +37,7 @@ function table($id, &$explained, &$lines) {
             <th>OP2</th>
             <th>RESULT(TYPE)</th>
             <th>RESULT</th>
+            <th>EXT</th>
         </tr>
     </thead>
     <tbody>
@@ -45,7 +46,7 @@ function table($id, &$explained, &$lines) {
     <?php   if (@$lines[$opline["lineno"]-1]): ?>
     <tr>
       <td class="code">#<?=$opline["lineno"] ?></td>
-      <td colspan="8" class="code">
+      <td colspan="9" class="code">
       <pre>
         <code class="php">
           <?php
@@ -73,7 +74,11 @@ function table($id, &$explained, &$lines) {
             printf("<td>%s</td>", $opline[$op]);
           } else printf("<td>-</td>");
         }
+        if (isset($opline["extended_value"])) {
+          printf("<td>%s</td>", $opline["extended_value"]);
+        } else printf("<td>-</td>");
         ?>
+        
     </tr>
     <?php endforeach; ?>
     </tbody>
