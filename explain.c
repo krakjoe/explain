@@ -88,29 +88,7 @@ static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint t
     } break;
 
     case IS_CONST: {
-      zval *copied;
-      int use_copy;
-
-      switch (Z_TYPE(op->literal->constant) & IS_CONSTANT_TYPE_MASK) {
-        case IS_NULL:
-          Z_TYPE_P(copied) = IS_NULL;
-        break;
-        
-        case IS_RESOURCE:
-        case IS_BOOL:
-        case IS_LONG:
-          ZVAL_LONG(copied, Z_LVAL(op->literal->constant));
-        break;
-        
-        case IS_DOUBLE:
-          ZVAL_DOUBLE(copied, Z_DVAL(op->literal->constant));
-        break;
-        
-        default:
-          zend_make_printable_zval(&op->literal->constant, copied, &use_copy);
-      }
-      
-      add_assoc_zval_ex(*return_value_ptr, name, name_len, copied);
+      add_assoc_zval_ex(*return_value_ptr, name, name_len, &op->literal->constant);
     } break;
   }
 } /* }}} */
