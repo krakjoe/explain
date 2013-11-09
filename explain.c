@@ -117,32 +117,6 @@ static inline void explain_optype(zend_uint type, zval **return_value_ptr TSRMLS
   }
 } /* }}} */
 
-static inline void explain_extended_value(zend_uchar opcode, zend_ulong extended_value, zval **return_value_ptr TSRMLS_DC) { /* {{{ */
-  switch (opcode) {
-    case ZEND_FETCH_DIM_R:
-      ZVAL_BOOL(*return_value_ptr, extended_value & ZEND_FETCH_ADD_LOCK);
-    break;
-    case ZEND_FETCH_OBJ_FUNC_ARG:
-    case ZEND_FETCH_DIM_FUNC_ARG:
-      ZVAL_BOOL(*return_value_ptr, extended_value & ZEND_FETCH_ARG_MASK);
-    break;
-    case ZEND_FETCH_OBJ_W:
-      ZVAL_BOOL(*return_value_ptr, extended_value & ZEND_FETCH_MAKE_REF);
-    break;
-    case ZEND_JMPZNZ:
-    case ZEND_ASSIGN_REF:
-    case ZEND_FETCH_DIM_W:
-    case ZEND_FETCH_CLASS:
-    case ZEND_INIT_STATIC_METHOD_CALL:
-    case ZEND_RETURN_BY_REF:
-    case ZEND_CATCH:
-    case ZEND_SEND_VAL:
-    case ZEND_SEND_VAR_NO_REF:
-      ZVAL_BOOL(*return_value_ptr, extended_value);
-    break;
-  }
-} /* }}} */
-
 static inline void explain_op_array(zend_op_array *ops, zval *return_value TSRMLS_DC) { /* {{{ */
   if (ops) {
     zend_uint  next = 0;
@@ -154,7 +128,7 @@ static inline void explain_op_array(zend_op_array *ops, zval *return_value TSRML
     {
       zval *zopline = NULL;
       
-      ALLOC_INIT_ZVAL(zopline);
+      MAKE_STD_ZVAL(zopline);
       
       array_init(zopline);
       {
