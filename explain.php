@@ -21,7 +21,7 @@ $scanpath = function($path) use (&$scanpath) {
     }
   }
   return $files;
-}
+};
 
 $table = function($id, &$explained, &$lines) {
   ?>
@@ -84,7 +84,7 @@ $table = function($id, &$explained, &$lines) {
     </tbody>
     </table>
   <?php
-}
+};
 
 if (is_dir($input)) {
   foreach ($scanpath($input) as $file) {
