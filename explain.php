@@ -5,7 +5,7 @@ $classes = array();
 $functions = array();
 $main = false;
 
-function scanpath($path) {
+$scanpath = function($path) use (&$scanpath) {
   $files = array();
   if (is_dir($path)) {
     foreach (scandir($path) as $file) {
@@ -13,7 +13,7 @@ function scanpath($path) {
         $scan = "{$path}/{$file}";
         if (is_dir($scan)) {
           $files = array_merge(
-            $files, scanpath($scan));
+            $files, $scanpath($scan));
         } else if (preg_match("~\.php\$~", $scan)) {
           $files[] = $scan;
         }
@@ -23,9 +23,9 @@ function scanpath($path) {
   return $files;
 }
 
-function table($id, &$explained, &$lines) {
+$table = function($id, &$explained, &$lines) {
   ?>
-        <table id="<?=sprintf("table-%s", md5($id)) ?>" style="display:none;">
+  <table id="<?=sprintf("table-%s", md5($id)) ?>" style="display:none;">
     <thead>
         <tr>
             <th>LINE</th>
@@ -87,7 +87,7 @@ function table($id, &$explained, &$lines) {
 }
 
 if (is_dir($input)) {
-  foreach (scanpath($input) as $file) {
+  foreach ($scanpath($input) as $file) {
     $name = substr($file, strlen($input));
     
     $explained[$name] = explain(
@@ -175,19 +175,19 @@ if (is_dir($input)) {
   <?php
   if ($explained) {
     foreach ($explained as $file => $explanation) {
-      table($file, $explanation, $lines[$file]);
+      $table($file, $explanation, $lines[$file]);
 
       if ($classes[$file]): 
          foreach ($classes[$file] as $class => $methods): 
            foreach ($methods as $method => $opcodes):
-             table("{$file}-{$class}-{$method}", $opcodes, $lines[$file]);
+             $table("{$file}-{$class}-{$method}", $opcodes, $lines[$file]);
            endforeach;
          endforeach;
       endif;
       
       if ($functions[$file]):
         foreach ($functions[$file] as $function => $opcodes):
-          table("{$file}-{$function}", $opcodes, $lines[$file]);
+          $table("{$file}-{$function}", $opcodes, $lines[$file]);
         endforeach;
       endif;
     }
