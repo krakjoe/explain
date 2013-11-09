@@ -88,7 +88,12 @@ static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint t
     } break;
 
     case IS_CONST: {
-      add_assoc_zval_ex(*return_value_ptr, name, name_len, &op->literal->constant);
+      zval *copy;
+      MAKE_STD_ZVAL(copy);
+      *copy = op->literal->constant;
+      zval_copy_ctor(copy);
+      add_assoc_zval_ex(*return_value_ptr, name, name_len, copy);
+      zend_hash_next_index_insert(&EX_G(zval_cache), &copy, sizeof(zval*), NULL);
     } break;
   }
 } /* }}} */
@@ -129,7 +134,7 @@ static inline void explain_op_array(zend_op_array *ops, zval *return_value TSRML
     {
       zval *zopline = NULL;
       
-      ALLOC_INIT_ZVAL(zopline);
+      MAKE_STD_ZVAL(zopline);
       
       array_init(zopline);
       {
@@ -349,7 +354,9 @@ PHP_FUNCTION(explain)
            zend_hash_get_current_data_ex(CG(function_table), (void**) &pfe, &position) == SUCCESS;
            zend_hash_move_forward_ex(CG(function_table), &position)) {
 
-           if (pfe->common.type == ZEND_USER_FUNCTION && zend_hash_get_current_key_ex(CG(function_table), &fe_name, &fe_name_len, &fe_idx, 0, &position) == HASH_KEY_IS_STRING) {
+           if (pfe->common.type == ZEND_USER_FUNCTION && 
+              (zend_hash_get_current_key_ex(CG(function_table), &fe_name, &fe_name_len, &fe_idx, 0, &position) == HASH_KEY_IS_STRING) &&
+              !zend_hash_exists(&caches[1], fe_name, fe_name_len)) {
              zval *zfe;
            
              MAKE_STD_ZVAL(zfe);
@@ -438,6 +445,10 @@ static inline void php_explain_destroy_ops(zend_op_array **ops) { /* {{{ */
   efree(*ops);
 } /* }}} */
 
+static inline void php_explain_destroy_zval(zval **cached) { /* {{{ */
+  zval_ptr_dtor(cached);
+} /* }}} */
+
 /* {{{ MINIT */
 static PHP_MINIT_FUNCTION(explain) {
   ZEND_INIT_MODULE_GLOBALS(explain, php_explain_globals_ctor, NULL);
@@ -457,10 +468,12 @@ static PHP_MINIT_FUNCTION(explain) {
 
 static PHP_RINIT_FUNCTION(explain) {
   zend_hash_init(&EX_G(explained), 8, NULL, (dtor_func_t) php_explain_destroy_ops, 0);
+  zend_hash_init(&EX_G(zval_cache), 8, NULL, (dtor_func_t) php_explain_destroy_zval, 0);
 }
 
 static PHP_RSHUTDOWN_FUNCTION(explain) {
   zend_hash_destroy(&EX_G(explained));
+  zend_hash_destroy(&EX_G(zval_cache));
 }
 
 /* {{{ explain_module_entry

@@ -33,6 +33,7 @@ extern zend_module_entry explain_module_entry;
 
 ZEND_BEGIN_MODULE_GLOBALS(explain)
   HashTable explained;
+  HashTable zval_cache;
 ZEND_END_MODULE_GLOBALS(explain)
 
 #ifdef ZTS
