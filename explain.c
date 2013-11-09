@@ -32,6 +32,8 @@ typedef struct _explain_opcode_t {
 	const char *name;
 	size_t  name_len;
 	zend_uchar opcode;
+	zend_bool cached;
+	zval *cache;
 } explain_opcode_t;
 
 #define EXPLAIN_FILE   0x00000001
@@ -39,7 +41,7 @@ typedef struct _explain_opcode_t {
 #define EXPLAIN_OPLINE 0x00000011
 
 #define EXPLAIN_OPCODE_NAME(c) \
-	{#c, sizeof(#c)-1, c}
+	{#c, sizeof(#c)-1, c, 0, 0}
 
 #include "explain_opcodes.h"
 
@@ -47,10 +49,10 @@ ZEND_DECLARE_MODULE_GLOBALS(explain);
 
 static inline void explain_opcode(long opcode, zval **return_value_ptr TSRMLS_DC) { /* {{{ */
   explain_opcode_t decode = opcodes[opcode];
-  
+
   if (decode.opcode == opcode) {
     ZVAL_STRINGL(
-      *return_value_ptr, decode.name, decode.name_len, 1);
+        *return_value_ptr, decode.name, decode.name_len, 1);
   } else ZVAL_STRINGL(*return_value_ptr, "unknown", strlen("unknown"), 1);
 } /* }}} */
 
@@ -118,19 +120,44 @@ static inline void explain_optype(zend_uint type, zval **return_value_ptr TSRMLS
   }
 } /* }}} */
 
+static inline void explain_extended_value(zend_uchar opcode, zend_ulong extended_value, zval **return_value_ptr TSRMLS_DC) { /* {{{ */
+  switch (opcode) {
+    case ZEND_FETCH_DIM_R:
+      ZVAL_BOOL(*return_value_ptr, extended_value & ZEND_FETCH_ADD_LOCK);
+    break;
+    case ZEND_FETCH_OBJ_FUNC_ARG:
+    case ZEND_FETCH_DIM_FUNC_ARG:
+      ZVAL_BOOL(*return_value_ptr, extended_value & ZEND_FETCH_ARG_MASK);
+    break;
+    case ZEND_FETCH_OBJ_W:
+      ZVAL_BOOL(*return_value_ptr, extended_value & ZEND_FETCH_MAKE_REF);
+    break;
+    case ZEND_JMPZNZ:
+    case ZEND_ASSIGN_REF:
+    case ZEND_FETCH_DIM_W:
+    case ZEND_FETCH_CLASS:
+    case ZEND_INIT_STATIC_METHOD_CALL:
+    case ZEND_RETURN_BY_REF:
+    case ZEND_CATCH:
+    case ZEND_SEND_VAL:
+    case ZEND_SEND_VAR_NO_REF:
+      ZVAL_BOOL(*return_value_ptr, extended_value);
+    break;
+  }
+} /* }}} */
 
 static inline void explain_op_array(zend_op_array *ops, zval *return_value TSRMLS_DC) { /* {{{ */
   if (ops) {
     zend_uint  next = 0;
     zend_llist vars;
-
+        
     zend_llist_init(&vars, sizeof(zend_ulong), NULL, 0);
 
     do
     {
       zval *zopline = NULL;
       
-      MAKE_STD_ZVAL(zopline);
+      ALLOC_INIT_ZVAL(zopline);
       
       array_init(zopline);
       {
@@ -140,7 +167,7 @@ static inline void explain_op_array(zend_op_array *ops, zval *return_value TSRML
           zopline, "opline", sizeof("opline"), next);
         add_assoc_long_ex(
           zopline, "opcode", sizeof("opcode"), opline->opcode);
-          
+
         switch (opline->opcode) {
           case ZEND_JMP:
 #ifdef ZEND_GOTO
@@ -196,6 +223,12 @@ static inline void explain_op_array(zend_op_array *ops, zval *return_value TSRML
             explain_zend_op(ops, &opline->result, opline->result_type, "result", sizeof("result"), &vars, &zopline TSRMLS_CC);
           break;
           
+          case ZEND_RECV_INIT:
+            add_assoc_long_ex(
+                zopline, "result_type", sizeof("result_type"), opline->result_type);
+            explain_zend_op(ops, &opline->result, opline->result_type, "result", sizeof("result"), &vars, &zopline TSRMLS_CC);
+          break;
+          
           default: {
             add_assoc_long_ex(
               zopline, "op1_type", sizeof("op1_type"), opline->op1_type);
@@ -228,28 +261,15 @@ static inline void explain_op_array(zend_op_array *ops, zval *return_value TSRML
   }
 }
 
-/* The following two functions are copied from zend_execute_API.c, because they aren't ZEND_API */
-static int clean_non_persistent_function(zend_function *function TSRMLS_DC) /* {{{ */
-{
-  return (function->type == ZEND_INTERNAL_FUNCTION) ? ZEND_HASH_APPLY_STOP : ZEND_HASH_APPLY_REMOVE;
-}
-/* }}} */
-
-static int clean_non_persistent_class(zend_class_entry **ce TSRMLS_DC) /* {{{ */
-{
-  return ((*ce)->type == ZEND_INTERNAL_CLASS) ? ZEND_HASH_APPLY_STOP : ZEND_HASH_APPLY_REMOVE;
-}
-/* }}} */
-
 static inline void explain_create_caches(HashTable *classes, HashTable *functions TSRMLS_DC) { /* {{{ */
   zend_function tf;
   zend_class_entry *te;
 
   zend_hash_init(classes, zend_hash_num_elements(classes), NULL, NULL, 0);
-  zend_hash_copy(classes, classes, NULL, &te, sizeof(zend_class_entry*));
+  zend_hash_copy(classes, CG(class_table), NULL, &te, sizeof(zend_class_entry*));
 
   zend_hash_init(functions, zend_hash_num_elements(functions), NULL, NULL, 0);
-  zend_hash_copy(functions, functions, NULL, &tf, sizeof(zend_function));
+  zend_hash_copy(functions, CG(function_table), NULL, &tf, sizeof(zend_function));
 } /* }}} */
 
 static inline void explain_destroy_caches(HashTable *classes, HashTable *functions TSRMLS_DC) { /* {{{ */
@@ -301,10 +321,10 @@ PHP_FUNCTION(explain)
       RETURN_FALSE;
     }
     
-    zend_hash_next_index_insert(&EX_G(explained), &ops, sizeof(zend_op_array*), NULL);
-
     array_init(return_value);
     
+    zend_hash_next_index_insert(&EX_G(explained), &ops, sizeof(zend_op_array*), NULL);
+
     explain_op_array(ops, return_value TSRMLS_CC);
     
     if (classes) {
@@ -327,7 +347,7 @@ PHP_FUNCTION(explain)
             zval *zce;
             zend_function *pfe;
             
-            MAKE_STD_ZVAL(zce);
+            ALLOC_INIT_ZVAL(zce);
             
             array_init(zce);
             
@@ -337,7 +357,7 @@ PHP_FUNCTION(explain)
                  if (pfe->common.type == ZEND_USER_FUNCTION) {
                    zval *zfe;
                  
-                   MAKE_STD_ZVAL(zfe);
+                   ALLOC_INIT_ZVAL(zfe);
                    
                    array_init(zfe);
                    
@@ -372,7 +392,7 @@ PHP_FUNCTION(explain)
               !zend_hash_exists(&caches[1], fe_name, fe_name_len)) {
              zval *zfe;
            
-             MAKE_STD_ZVAL(zfe);
+             ALLOC_INIT_ZVAL(zfe);
              
              array_init(zfe);
              
@@ -453,13 +473,10 @@ static inline void php_explain_globals_ctor(zend_explain_globals *eg) {} /* }}} 
 
 static inline void php_explain_destroy_ops(zend_op_array **ops) { /* {{{ */
   TSRMLS_FETCH();
-  
-  destroy_op_array(*ops TSRMLS_CC);
-  efree(*ops);
-} /* }}} */
-
-static inline void php_explain_destroy_zval(zval **cached) { /* {{{ */
-  zval_ptr_dtor(cached);
+  if ((*ops)) {
+    destroy_op_array(*ops TSRMLS_CC);
+    efree(*ops);
+  }
 } /* }}} */
 
 /* {{{ MINIT */
@@ -481,12 +498,10 @@ static PHP_MINIT_FUNCTION(explain) {
 
 static PHP_RINIT_FUNCTION(explain) {
   zend_hash_init(&EX_G(explained), 8, NULL, (dtor_func_t) php_explain_destroy_ops, 0);
-  zend_hash_init(&EX_G(zval_cache), 8, NULL, (dtor_func_t) php_explain_destroy_zval, 0);
 }
 
 static PHP_RSHUTDOWN_FUNCTION(explain) {
   zend_hash_destroy(&EX_G(explained));
-  zend_hash_destroy(&EX_G(zval_cache));
 }
 
 /* {{{ explain_module_entry
