@@ -32,8 +32,6 @@ typedef struct _explain_opcode_t {
 	const char *name;
 	size_t  name_len;
 	zend_uchar opcode;
-	zend_bool cached;
-	zval *cache;
 } explain_opcode_t;
 
 #define EXPLAIN_FILE   0x00000001
@@ -41,7 +39,7 @@ typedef struct _explain_opcode_t {
 #define EXPLAIN_OPLINE 0x00000011
 
 #define EXPLAIN_OPCODE_NAME(c) \
-	{#c, sizeof(#c)-1, c, 0, 0}
+	{#c, sizeof(#c)-1, c}
 
 #include "explain_opcodes.h"
 
