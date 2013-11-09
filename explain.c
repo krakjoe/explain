@@ -88,7 +88,6 @@ static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint t
     } break;
 
     case IS_CONST: {
-      /* RECV_INIT bug */
       add_assoc_zval_ex(*return_value_ptr, name, name_len, &op->literal->constant);
     } break;
   }
