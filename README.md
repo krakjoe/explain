@@ -40,7 +40,7 @@ php explain.php /path/to/files > output.html
 
 Executing the command above will recursively scan the path for PHP files ...
 
-**note: crank up the memory limit and keep the numbers of files down, for now**
+**note: crank up the memory limit when explaining directories**
 
 Preview
 =======
