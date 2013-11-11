@@ -20,7 +20,7 @@ array(2) {
     ["op1_type"]=>
     int(1)
     ["op1"]=>
-    &string(11) "Hello World"
+    string(11) "Hello World"
     ["op2_type"]=>
     int(8)
     ["result_type"]=>
@@ -37,7 +37,7 @@ array(2) {
     ["op1_type"]=>
     int(1)
     ["op1"]=>
-    &NULL
+    NULL
     ["op2_type"]=>
     int(8)
     ["result_type"]=>
