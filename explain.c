@@ -88,7 +88,14 @@ static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint t
     } break;
 
     case IS_CONST: {
-      add_assoc_zval_ex(*return_value_ptr, name, name_len, &op->literal->constant);
+      zval *copied, 
+            *pzval = &op->literal->constant;
+      
+      MAKE_STD_ZVAL(copied);
+      
+      ZVAL_ZVAL(copied, pzval, 1, 0);
+      add_assoc_zval_ex(*return_value_ptr, name, name_len, copied);
+      zend_hash_next_index_insert(&EX_G(zval_cache), &copied, sizeof(zval*), NULL);
     } break;
   }
 } /* }}} */
@@ -469,10 +476,12 @@ static PHP_MINIT_FUNCTION(explain) {
 
 static PHP_RINIT_FUNCTION(explain) {
   zend_hash_init(&EX_G(explained), 8, NULL, (dtor_func_t) php_explain_destroy_ops, 0);
+  zend_hash_init(&EX_G(zval_cache), 8, NULL, (dtor_func_t) ZVAL_PTR_DTOR, 0);
 }
 
 static PHP_RSHUTDOWN_FUNCTION(explain) {
   zend_hash_destroy(&EX_G(explained));
+  zend_hash_destroy(&EX_G(zval_cache));
 }
 
 /* {{{ explain_module_entry
