@@ -46,6 +46,11 @@ typedef struct _explain_opcode_t {
 ZEND_DECLARE_MODULE_GLOBALS(explain);
 
 static inline void explain_opcode(long opcode, zval **return_value_ptr TSRMLS_DC) { /* {{{ */
+
+  if (opcode >= sizeof(opcodes)) {
+      ZVAL_STRINGL(*return_value_ptr, "unknown", strlen("unknown"), 1);
+  }
+
   explain_opcode_t decode = opcodes[opcode];
 
   if (decode.opcode == opcode) {
