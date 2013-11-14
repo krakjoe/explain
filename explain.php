@@ -58,7 +58,7 @@ $table = function($id, &$explained, &$lines) {
       </pre>
       </td>
     </tr>
-    <?php   endif; ?>
+    <?php endif; ?>
     <?php endif; ?>
     <tr>
         <td>&nbsp;</td>
@@ -75,7 +75,7 @@ $table = function($id, &$explained, &$lines) {
           } else printf("<td>-</td>");
         }
         if (isset($opline["extended_value"])) {
-          printf("<td>%s</td>", $opline["extended_value"]);
+          printf("<td>0x%08.x</td>", $opline["extended_value"]);
         } else printf("<td>-</td>");
         ?>
         
