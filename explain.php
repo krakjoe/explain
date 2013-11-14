@@ -71,7 +71,7 @@ $table = function($id, &$explained, &$lines) {
               printf("<td>%s</td>", explain_optype($opline["{$op}_type"]));
           } else printf("<td>-</td>");
           if (isset($opline[$op])) {
-            printf("<td>%s</td>", $opline[$op]);
+            printf("<td>%s</td>", htmlentities($opline[$op]));
           } else printf("<td>-</td>");
         }
         if (isset($opline["extended_value"])) {
