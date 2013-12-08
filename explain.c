@@ -95,12 +95,9 @@ static inline void explain_zend_op(zend_op_array *ops, znode_op *op, zend_uint t
     case IS_CONST: {
       zval *copied, 
             *pzval = &op->literal->constant;
-      
       MAKE_STD_ZVAL(copied);
-      
       ZVAL_ZVAL(copied, pzval, 1, 0);
       add_assoc_zval_ex(*return_value_ptr, name, name_len, copied);
-      zend_hash_next_index_insert(&EX_G(zval_cache), &copied, sizeof(zval*), NULL);
     } break;
   }
 } /* }}} */
