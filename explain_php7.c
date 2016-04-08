@@ -118,6 +118,7 @@ static inline void explain_optype(uint32_t type, zval *return_value) { /* {{{ */
   case EXPLAIN_OPLINE: ZVAL_STRINGL(return_value, "IS_OPLINE", strlen("IS_OPLINE")); break;
 
   default:
+#ifdef EXT_TYPE_UNUSED
     if (type & EXT_TYPE_UNUSED) {
       switch (type &~ EXT_TYPE_UNUSED) {
       case IS_CV: ZVAL_STRINGL(return_value, "IS_CV|EXT_TYPE_UNUSED", strlen("IS_CV|EXT_TYPE_UNUSED")); break;
@@ -126,9 +127,9 @@ static inline void explain_optype(uint32_t type, zval *return_value) { /* {{{ */
       case IS_CONST: ZVAL_STRINGL(return_value, "IS_CONST|EXT_TYPE_UNUSED", strlen("IS_CONST|EXT_TYPE_UNUSED")); break;
       case IS_UNUSED: ZVAL_STRINGL(return_value, "IS_UNUSED|EXT_TYPE_UNUSED", strlen("IS_UNUSED|EXT_TYPE_UNUSED")); break;
       }
-    } else {
-      ZVAL_STRINGL(return_value, "unknown", strlen("unknown"));
-    }
+    } else
+#endif
+    ZVAL_STRINGL(return_value, "unknown", strlen("unknown"));
   }
 } /* }}} */
 
@@ -430,8 +431,9 @@ static PHP_MINIT_FUNCTION(explain) {
   REGISTER_LONG_CONSTANT("EXPLAIN_IS_VAR",          IS_VAR,              CONST_CS | CONST_PERSISTENT);
   REGISTER_LONG_CONSTANT("EXPLAIN_IS_TMP_VAR",      IS_TMP_VAR,          CONST_CS | CONST_PERSISTENT);
   REGISTER_LONG_CONSTANT("EXPLAIN_IS_CV",           IS_CV,               CONST_CS | CONST_PERSISTENT);
+#ifdef EXT_TYPE_UNUSED
   REGISTER_LONG_CONSTANT("EXPLAIN_EXT_TYPE_UNUSED", EXT_TYPE_UNUSED,     CONST_CS | CONST_PERSISTENT);
-
+#endif
   return SUCCESS;
 } /* }}} */
 
