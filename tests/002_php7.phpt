@@ -1,10 +1,10 @@
 --TEST--
-Check basic functionality (PHP <= 5.x.x)
+Check basic functionality (PHP >= 7.0.0)
 --SKIPIF--
 <?php
     if (!extension_loaded("explain")) print "skip";
-    if (version_compare(PHP_VERSION, '7.0.0') >= 0) {
-        // skip if PHP >= 7.0.0
+    if (version_compare(PHP_VERSION, '7.0.0') < 0) {
+        // skip if PHP < 7.0.0
         print "skip";
     }
 ?>
@@ -35,7 +35,7 @@ array(2) {
     int(1)
   }
   [1]=>
-  array(7) {
+  array(8) {
     ["opline"]=>
     int(1)
     ["opcode"]=>
@@ -48,6 +48,8 @@ array(2) {
     int(8)
     ["result_type"]=>
     int(8)
+    ["extended_value"]=>
+    int(4294967295)
     ["lineno"]=>
     int(1)
   }

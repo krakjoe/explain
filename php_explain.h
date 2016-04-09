@@ -36,10 +36,17 @@ ZEND_BEGIN_MODULE_GLOBALS(explain)
   HashTable zval_cache;
 ZEND_END_MODULE_GLOBALS(explain)
 
-#ifdef ZTS
-#define EX_G(v) TSRMG(explain_globals_id, zend_explain_globals *, v)
+#if defined(ZEND_ENGINE_3)
+#  define EX_G(v) ZEND_MODULE_GLOBALS_ACCESSOR(explain, v)
+#  if defined(ZTS) && defined(COMPILE_DL_EXPLAIN)
+     ZEND_TSRMLS_CACHE_EXTERN();
+#  endif
 #else
-#define EX_G(v) (explain_globals.v)
+#  ifdef ZTS
+#    define EX_G(v) TSRMG(explain_globals_id, zend_explain_globals *, v)
+#  else
+#    define EX_G(v) (explain_globals.v)
+#  endif
 #endif
 
 #endif	/* PHP_EXPLAIN_H */
